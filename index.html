@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S2 Chinese (NCS) Revision</title>
+<style>
+  :root {
+    --bg-cream: #FFFDF6;
+    --card-white: #FFFFFF;
+    --primary-blue: #3B82F6;
+    --primary-yellow: #FFD166;
+    --primary-green: #06D6A0;
+    --primary-pink: #EF476F;
+    --primary-purple: #8338EC;
+    --primary-orange: #F77F00;
+    --text-dark: #1E293B;
+    --text-en: #475569;
+    --border-soft: #CBD5E1;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-cream);
+    color: var(--text-dark);
+    font-family: "PingFang HK", "Microsoft JhengHei", "Heiti TC", "Segoe UI", sans-serif;
+    font-size: 20px;
+    line-height: 1.65;
+    letter-spacing: 0.04em;
+  }
+
+  header {
+    background: linear-gradient(135deg, #FFD166 0%, #F77F00 100%);
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-bottom: 4px solid #D62828;
+  }
+
+  .header-title {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-title-main {
+    font-size: 25px;
+    font-weight: 900;
+    color: #1E293B;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-title-sub {
+    font-size: 15px;
+    font-weight: 700;
+    color: #334155;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .voice-pill {
+    background: rgba(255,255,255,0.95);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .voice-pill input[type="range"] {
+    width: 85px;
+    accent-color: var(--primary-blue);
+    cursor: pointer;
+  }
+
+  .star-badge {
+    background: #FFFFFF;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 20px;
+    color: #D97706;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 12px 8px;
+    flex-wrap: wrap;
+    max-width: 1220px;
+    margin: 0 auto;
+  }
+
+  .tab-btn {
+    border: 3px solid #E2E8F0;
+    background: #FFFFFF;
+    color: var(--text-dark);
+    font-size: 17px;
+    font-weight: 800;
+    padding: 10px 16px;
+    border-radius: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.25;
+  }
+
+  .tab-btn span.en-tab {
+    font-size: 12px;
+    color: var(--text-en);
+    font-weight: 700;
+  }
+
+  .tab-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-blue);
+  }
+
+  .tab-btn.active {
+    background: var(--primary-blue);
+    color: #FFFFFF;
+    border-color: #1D4ED8;
+    box-shadow: 0 6px 14px rgba(59, 130, 246, 0.35);
+  }
+
+  .tab-btn.active span.en-tab {
+    color: #E0F2FE;
+  }
+
+  main {
+    max-width: 1160px;
+    margin: 12px auto 60px;
+    padding: 0 16px;
+  }
+
+  .section-panel {
+    display: none;
+    background: var(--card-white);
+    border-radius: 26px;
+    padding: 26px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    border: 3px solid #E2E8F0;
+  }
+
+  .section-panel.active {
+    display: block;
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 3px dashed #CBD5E1;
+  }
+
+  .panel-title-box h2 {
+    font-size: 23px;
+    font-weight: 900;
+    margin: 0;
+    color: var(--text-dark);
+  }
+
+  .panel-title-box p {
+    margin: 4px 0 0;
+    font-size: 15px;
+    color: var(--text-en);
+    font-weight: 700;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 14px;
+    padding: 9px 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    transition: transform 0.12s;
+  }
+
+  .btn:active { transform: scale(0.96); }
+  .btn-primary { background: var(--primary-blue); color: white; box-shadow: 0 3px 0 #1D4ED8; }
+  .btn-success { background: var(--primary-green); color: #064E3B; box-shadow: 0 3px 0 #059669; }
+  .btn-warning { background: var(--primary-yellow); color: #1E293B; box-shadow: 0 3px 0 #D97706; }
+  .btn-danger { background: var(--primary-pink); color: white; box-shadow: 0 3px 0 #BE123C; }
+  .btn-purple { background: var(--primary-purple); color: white; box-shadow: 0 3px 0 #5B21B6; }
+
+  .audio-group {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .voice-btn {
+    border-radius: 10px;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: all 0.15s;
+  }
+
+  .voice-btn:hover { transform: scale(1.06); }
+  .voice-zh { background: #FEF3C7; color: #92400E; border-color: #F59E0B; }
+  .voice-en { background: #E0F2FE; color: #1E40AF; border-color: #38BDF8; }
+
+  /* 關卡 1：詞語填充 */
+  .word-bank-sticky {
+    background: #FFFBEB;
+    border: 3px solid #F59E0B;
+    border-radius: 20px;
+    padding: 14px 18px;
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+  }
+
+  .wb-header {
+    font-size: 16px;
+    font-weight: 800;
+    color: #92400E;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .wb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 8px;
+  }
+
+  .wb-card {
+    background: #FFFFFF;
+    border: 2px solid #F59E0B;
+    border-radius: 12px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .wb-card:hover {
+    background: #FEF3C7;
+    transform: translateY(-2px);
+  }
+
+  .wb-card.used {
+    opacity: 0.38;
+    background: #E2E8F0;
+    border-color: #94A3B8;
+  }
+
+  .wb-card-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .wb-zh { font-size: 18px; font-weight: 900; color: #1E293B; }
+  .wb-en { font-size: 13px; font-weight: 700; color: #475569; }
+
+  .fill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .fill-item {
+    background: #F8FAFC;
+    border: 2px solid #CBD5E1;
+    border-radius: 18px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .fill-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .fill-zh-line {
+    font-size: 21px;
+    font-weight: 800;
+    color: #1E293B;
+    line-height: 1.9;
+  }
+
+  .fill-en-line {
+    font-size: 16px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .slot-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 135px;
+    padding: 2px 12px;
+    margin: 0 5px;
+    background: #FFFFFF;
+    border: 3px solid var(--primary-blue);
+    border-radius: 12px;
+    cursor: pointer;
+    vertical-align: middle;
+    line-height: 1.15;
+    transition: all 0.2s;
+  }
+
+  .slot-box.active-slot {
+    background: #DBEAFE;
+    border-style: dashed;
+    transform: scale(1.05);
+  }
+
+  .slot-box.correct {
+    background: #D1FAE5;
+    border-color: #059669;
+    color: #065F46;
+  }
+
+  .slot-box.wrong {
+    background: #FFE4E6;
+    border-color: #E11D48;
+    animation: shake 0.35s;
+  }
+
+  .slot-zh { font-size: 20px; font-weight: 900; color: #1D4ED8; }
+  .slot-en { font-size: 12px; font-weight: 700; color: #475569; }
+  .slot-box.correct .slot-zh { color: #065F46; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  /* 關卡 2：排句成段 */
+  .reorder-pool {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .sentence-card {
+    background: #FFFFFF;
+    border: 3px solid #94A3B8;
+    border-radius: 18px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sentence-card:hover {
+    border-color: var(--primary-blue);
+    background: #F0F9FF;
+  }
+
+  .sentence-card.placed {
+    opacity: 0.4;
+    cursor: default;
+    background: #E2E8F0;
+  }
+
+  .letter-badge {
+    background: var(--primary-blue);
+    color: white;
+    font-size: 22px;
+    font-weight: 900;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .reorder-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .order-target {
+    background: #F8FAFC;
+    border: 3px dashed #64748B;
+    border-radius: 18px;
+    padding: 14px;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .order-target.filled {
+    border-style: solid;
+    border-color: var(--primary-blue);
+    background: #EFF6FF;
+  }
+
+  /* 關卡 3：造句練習 */
+  .making-card {
+    background: #F8FAFC;
+    border: 3px solid #CBD5E1;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .making-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: #7C3AED;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .char-counter {
+    font-size: 16px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .char-counter.pass {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .making-input {
+    width: 100%;
+    font-size: 20px;
+    font-weight: 800;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 3px solid #94A3B8;
+    font-family: inherit;
+    margin-top: 8px;
+  }
+
+  .Word-chunks {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+
+  .chunk-btn {
+    background: #FFFFFF;
+    border: 2px solid #8B5CF6;
+    border-radius: 12px;
+    padding: 8px 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+
+  .chunk-btn:hover {
+    background: #F3E8FF;
+  }
+
+  /* 關卡 4：量詞運用 */
+  .mc-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .mc-btn {
+    background: #FFFFFF;
+    border: 3px solid #CBD5E1;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.15s;
+  }
+
+  .mc-btn:hover:not(.locked) { border-color: var(--primary-blue); background: #F0F9FF; }
+  .mc-btn.correct { background: #D1FAE5; border-color: #059669; color: #065F46; }
+  .mc-btn.wrong { background: #FFE4E6; border-color: #E11D48; color: #881337; }
+  .mc-btn.locked { cursor: default; }
+
+  /* 關卡 5：GCSE 字詞翻譯 */
+  .gcse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .gcse-card {
+    background: #FFFBEB;
+    border: 3px solid #F59E0B;
+    border-radius: 18px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  }
+
+  .gcse-zh { font-size: 28px; font-weight: 900; color: #B91C1C; }
+  .gcse-en { font-size: 22px; font-weight: 800; color: #1E40AF; }
+
+  /* 關卡 6：GCSE 句子翻譯 */
+  .trans-card {
+    background: #F8FAFC;
+    border: 3px solid #CBD5E1;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .trans-prompt {
+    font-size: 22px;
+    font-weight: 900;
+    color: #1E293B;
+    margin-bottom: 8px;
+  }
+
+  .trans-target-box {
+    min-height: 68px;
+    background: #FFFFFF;
+    border: 3px dashed #3B82F6;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .bilingual-ans-block {
+    background: #FFFFFF;
+    border: 2px solid #059669;
+    border-radius: 12px;
+    padding: 6px 12px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  .bilingual-ans-top {
+    font-size: 20px;
+    font-weight: 900;
+    color: #065F46;
+    line-height: 1.25;
+  }
+
+  .bilingual-ans-sub {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-top: 2px;
+    line-height: 1.2;
+  }
+
+  /* 關卡 7：雙語描紅畫板 */
+  .canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 880px;
+    height: 330px;
+    background: #FFFFFF;
+    border: 4px solid var(--primary-blue);
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 12px auto;
+    touch-action: none;
+  }
+
+  #trace-canvas {
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <div class="header-title-main">
+      <span>🏫</span>
+      <span>S2 Chinese (NCS) Revision</span>
+    </div>
+    <div class="header-title-sub">聖貞德中學 中二級中文科(非華語學生) 2026-2027 第一學期溫習工作紙</div>
+  </div>
+
+  <div class="header-controls">
+    <div class="voice-pill">
+      <span>👩‍🏫 語速 Speed：</span>
+      <input type="range" id="rate-slider" min="0.55" max="0.95" step="0.05" value="0.75" oninput="updateRate(this.value)">
+      <span id="rate-label">0.75x (慢速清晰 Slow)</span>
+    </div>
+    <div class="star-badge">
+      <span>⭐ Stars:</span>
+      <span id="star-count">0</span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="switchTab('fill', this)">
+    <span>1. 詞語填充 (14題)</span>
+    <span class="en-tab">Vocabulary Fill-in-the-blanks</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('reorder', this)">
+    <span>2. 排句成段</span>
+    <span class="en-tab">Sentence Reordering</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('making', this)">
+    <span>3. 句式及詞語造句</span>
+    <span class="en-tab">Sentence Making (≥15 chars)</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('measure', this)">
+    <span>4. 量詞運用 (選擇+填充)</span>
+    <span class="en-tab">Measure Words (MC & Fill)</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('gcsevocab', this)">
+    <span>5. GCSE 字詞翻譯 (14詞)</span>
+    <span class="en-tab">GCSE Vocabulary Translation</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('gcsetrans', this)">
+    <span>6. GCSE 句子翻譯 (4題)</span>
+    <span class="en-tab">GCSE Sentence Translation</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('trace', this)">
+    <span>7. 聽音描紅畫板</span>
+    <span class="en-tab">Handwriting & Tracing Board</span>
+  </button>
+</nav>
+
+<main>
+  <!-- ==================== 1. 詞語填充 ==================== -->
+  <section id="panel-fill" class="section-panel active">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>一、詞語填充：請在橫線上填上恰當的字詞（一組字詞只能使用一次）</h2>
+        <p>Part 1: Fill in the blanks with the most suitable words from the table. (Each word can only be used once.)</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-warning" onclick="resetFillSection()">🔄 重新挑戰 Reset</button>
+        <button class="btn btn-success" onclick="showAllFillAnswers()">👁️ 顯示全部答案 Show All Answers</button>
+      </div>
+    </div>
+
+    <div class="word-bank-sticky">
+      <div class="wb-header">
+        <span>👇 詞語庫 Word Bank（共 20 個詞語，點擊空格後再點擊詞語填入；點擊按鈕可聽粵語或英文發音）：</span>
+      </div>
+      <div id="wb-grid" class="wb-grid"></div>
+    </div>
+
+    <div id="fill-list" class="fill-list"></div>
+  </section>
+
+  <!-- ==================== 2. 排句成段 ==================== -->
+  <section id="panel-reorder" class="section-panel">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>二、排句成段：請將句子重新組織成一個通順的段落</h2>
+        <p>Part 2: Rearrange the following sentences into a coherent paragraph.</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-warning" onclick="resetReorder()">🔄 重新排序 Reset</button>
+        <button class="btn btn-success" onclick="showReorderAnswer()">👁️ 顯示標準答案 Show Answer</button>
+      </div>
+    </div>
+
+    <p style="font-weight:800; color:#1E40AF; margin-top:0;">
+      💡 提示 Tip：請按順序點擊下方的句子卡（A / B / C / D），將它們排進第 1 至第 4 個空格中！<br>
+      <span style="font-size:15px; color:#475569;">Click the sentence cards (A / B / C / D) below in the correct logical order to fill in Boxes 1 to 4.</span>
+    </p>
+
+    <div id="reorder-pool" class="reorder-pool"></div>
+
+    <div id="reorder-slots" class="reorder-slots"></div>
+
+    <div id="reorder-feedback" style="display:none; padding:16px 20px; border-radius:16px; font-weight:800;"></div>
+  </section>
+
+  <!-- ==================== 3. 句式及詞語造句 ==================== -->
+  <section id="panel-making" class="section-panel">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>三 & 四、句式造句 及 詞語造句（每句不得少於 15 字）</h2>
+        <p>Part 3 & 4: Sentence Making with Patterns & Words (Each sentence must contain at least 15 easy Chinese characters.)</p>
+      </div>
+    </div>
+
+    <div id="making-container"></div>
+  </section>
+
+  <!-- ==================== 4. 量詞運用 ==================== -->
+  <section id="panel-measure" class="section-panel">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>五、量詞運用（第一部分：選擇題 5 分 ｜ 第二部分：量詞填充 5 題）</h2>
+        <p>Part 5: Measure Words — Section A: Multiple Choice (5 marks) & Section B: Fill in the Blanks</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-warning" onclick="initMeasureSection()">🔄 重置本頁練習 Reset</button>
+        <button class="btn btn-success" onclick="showAllMeasureAnswers()">👁️ 顯示全部標準答案 Show All</button>
+      </div>
+    </div>
+
+    <h3 style="color:#1D4ED8; border-left:6px solid #1D4ED8; padding-left:12px;">
+      (A) 選擇題：請選出最恰當的量詞，把英文字母填在括號内。（5 分）<br>
+      <span style="font-size:15px; color:#475569;">Multiple Choice: Choose the most appropriate measure word (Only ONE answer can be selected per question).</span>
+    </h3>
+    <div id="measure-mc-list" class="fill-list" style="margin-bottom:28px;"></div>
+
+    <h3 style="color:#059669; border-left:6px solid #059669; padding-left:12px;">
+      (B) 量詞填充：請在橫線上填寫合適的量詞。（篇、把、個、本、場）<br>
+      <span style="font-size:15px; color:#475569;">Fill in the blanks with the suitable measure word: 篇 (article), 把 (double-edged sword), 個 (schoolbag), 本 (book), 場 (competition).</span>
+    </h3>
+    <div id="measure-fill-bank" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;"></div>
+    <div id="measure-fill-list" class="fill-list"></div>
+  </section>
+
+  <!-- ==================== 5. GCSE 字詞翻譯 ==================== -->
+  <section id="panel-gcsevocab" class="section-panel">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>六、GCSE 字詞翻譯：按照 GCSE 生詞表翻譯中文或英文（使用英式英文）</h2>
+        <p>Part 6: GCSE Vocabulary Translation — Translate between Chinese and British English according to the GCSE vocabulary list.</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-purple" onclick="shuffleGcseMatch()">🎲 隨機刷新配對遊戲 Shuffle Match Game</button>
+      </div>
+    </div>
+
+    <div id="gcse-grid" class="gcse-grid"></div>
+
+    <h3 style="color:#7C3AED; border-left:6px solid #7C3AED; padding-left:12px;">
+      🎮 GCSE 生詞中英配對挑戰（點擊左邊中文 ＋ 點擊右邊英文）<br>
+      <span style="font-size:15px; color:#475569;">Interactive Matching Game: Match the Chinese words on the left with the British English meanings on the right!</span>
+    </h3>
+    <div style="display:flex; justify-content:space-between; gap:24px; max-width:900px; margin:16px auto;">
+      <div id="gcse-match-left" style="width:48%; display:flex; flex-direction:column; gap:10px;"></div>
+      <div id="gcse-match-right" style="width:48%; display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+  </section>
+
+  <!-- ==================== 6. GCSE 句子翻譯 ==================== -->
+  <section id="panel-gcsetrans" class="section-panel">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>七、GCSE 句子翻譯（英譯中 2 題 ＋ 中譯英 2 題）</h2>
+        <p>Part 7: GCSE Sentence Translation — Translate into Chinese (Q1-Q2) and Translate into British English (Q3-Q4).</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-warning" onclick="initSentenceTransSection()">🔄 重新排列句子 Reset</button>
+        <button class="btn btn-success" onclick="showAllSentenceTrans()">👁️ 顯示全部標準答案 Show All Answers</button>
+      </div>
+    </div>
+
+    <div id="trans-container"></div>
+  </section>
+
+  <!-- ==================== 7. 雙語描紅與畫板 ==================== -->
+  <section id="panel-trace" class="section-panel">
+    <div class="panel-header">
+      <div class="panel-title-box">
+        <h2>✍️ 八、重點字詞聽音描紅畫板（幼筆描紅 ＋ 大字體）</h2>
+        <p>Part 8: Audio Tracing Board — Listen to Cantonese or English and trace the characters with a fine brush.</p>
+      </div>
+      <div class="audio-group">
+        <button class="btn voice-zh" onclick="speakCurrentTrace('zh')">🔊 粵語</button>
+        <button class="btn voice-en" onclick="speakCurrentTrace('en')">🔊 英文</button>
+      </div>
+    </div>
+
+    <div id="trace-word-buttons" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;"></div>
+
+    <div id="trace-current-banner" style="background:#FFFBEB; border:3px solid #F59E0B; border-radius:16px; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;"></div>
+
+    <div class="canvas-wrapper">
+      <canvas id="trace-canvas" width="880" height="330"></canvas>
+    </div>
+
+    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; align-items:center;">
+      <button class="btn btn-primary" onclick="setTracePenWidth(3)">極幼筆 (3px)</button>
+      <button class="btn btn-primary" onclick="setTracePenWidth(4.5)">標準幼筆 (4.5px)</button>
+      <button class="btn btn-purple" onclick="toggleTraceGhost()">👁️ 顯示/隱藏底字 (默寫模式)</button>
+      <button class="btn btn-danger" onclick="clearTraceCanvas()">🗑️ 清除重寫 Clear</button>
+      <button class="btn btn-success" onclick="finishTraceWord()">✨ 完成描寫 (+1⭐)</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  // ==================== 語音系統 (嚴格篩選：溫柔粵語女聲 + 柔和清晰英式女聲，杜絕男聲與AI生硬感) ====================
+  let stars = 0;
+  let speechRate = 0.75;
+  let cantoneseVoice = null;
+  let britishVoice = null;
+
+  function addStar(n = 1) {
+    stars += n;
+    document.getElementById('star-count').innerText = stars;
+  }
+
+  function updateRate(val) {
+    speechRate = parseFloat(val);
+    document.getElementById('rate-label').innerText = `${speechRate.toFixed(2)}x`;
+  }
+
+  function loadPreferredVoices() {
+    if (!('speechSynthesis' in window)) return;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return;
+
+    // 1. 粵語女聲篩選（嚴格過濾男聲）
+    const hkPool = voices.filter(v => {
+      const name = v.name.toLowerCase();
+      const lang = v.lang.toLowerCase();
+      const isZh = lang.includes('zh-hk') || lang.includes('yue') || name.includes('hong kong') || name.includes('cantonese') || name.includes('粵');
+      const isMale = name.includes('wanlung') || name.includes('male') || name.includes('男') || name.includes('danny');
+      return isZh && !isMale;
+    });
+    const hkPriority = ['HiuGaai', 'HiuMaan', 'Natural', 'Premium', 'Enhanced', 'Sin-ji', 'Google', 'Female'];
+    for (const kw of hkPriority) {
+      const found = hkPool.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
+      if (found) { cantoneseVoice = found; break; }
+    }
+    if (!cantoneseVoice && hkPool.length) cantoneseVoice = hkPool[0];
+
+    // 2. 英式英語女聲篩選（嚴格排除男聲，確保自然英式口音、音色柔和自然）
+    const gbPool = voices.filter(v => {
+      const name = v.name.toLowerCase();
+      const lang = v.lang.toLowerCase();
+      const isGB = lang.includes('en-gb') || lang === 'en_gb' || name.includes('uk') || name.includes('united kingdom') || name.includes('british');
+      const isMale = name.includes('george') || name.includes('oliver') || name.includes('david') || name.includes('male') || name.includes('ryan') || name.includes('richard') || name.includes('alfie') || name.includes('guy');
+      return isGB && !isMale;
+    });
+
+    const gbPriority = [
+      'Libby', 'Sonia', 'Mia', 'Hazel', 'Stephanie', 'Serena', 'Martha', 
+      'Natural', 'Neural', 'Google UK English Female', 'Female', 'Victoria'
+    ];
+    for (const kw of gbPriority) {
+      const found = gbPool.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
+      if (found) { britishVoice = found; break; }
+    }
+    if (!britishVoice && gbPool.length) {
+      britishVoice = gbPool[0];
+    }
+
+    // 若系統暫未安裝本地 en-GB 女聲，退而尋找其它自然柔和的英語女聲，但依然堅持排除男聲
+    if (!britishVoice) {
+      const fallbackFemale = voices.filter(v => {
+        const name = v.name.toLowerCase();
+        const lang = v.lang.toLowerCase();
+        const isEn = lang.startsWith('en');
+        const isMale = name.includes('male') || name.includes('david') || name.includes('george') || name.includes('guy') || name.includes('mark');
+        return isEn && !isMale && (name.includes('female') || name.includes('natural') || name.includes('samantha') || name.includes('karen') || name.includes('victoria') || name.includes('zira'));
+      });
+      if (fallbackFemale.length) britishVoice = fallbackFemale[0];
+    }
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadPreferredVoices;
+  }
+
+  function speakZh(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    loadPreferredVoices();
+    const clean = text.replace(/＿＿+/g, '，空格，').replace(/_/g, '');
+    const u = new SpeechSynthesisUtterance(clean);
+    if (cantoneseVoice) u.voice = cantoneseVoice;
+    u.lang = 'zh-HK';
+    u.rate = speechRate;
+    u.pitch = 1.05;
+    window.speechSynthesis.speak(u);
+  }
+
+  function speakEn(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    loadPreferredVoices();
+    const u = new SpeechSynthesisUtterance(text);
+    if (britishVoice) u.voice = britishVoice;
+    u.lang = 'en-GB';
+    // 速度微調至 0.76x-0.82x，音調調至 1.06，使英式女聲顯得親切柔和，去除生硬AI機器感
+    u.rate = Math.max(0.72, Math.min(0.85, speechRate + 0.03));
+    u.pitch = 1.06;
+    window.speechSynthesis.speak(u);
+  }
+
+  // 每個項目僅配置「🔊 粵語」與「🔊 英文」兩個按鈕
+  function createAudioButtons(zhText, enText) {
+    const wrap = document.createElement('div');
+    wrap.className = 'audio-group';
+
+    const bZh = document.createElement('button');
+    bZh.className = 'voice-btn voice-zh';
+    bZh.innerText = '🔊 粵語';
+    bZh.title = '粵語女聲朗讀';
+    bZh.onclick = (e) => { e.stopPropagation(); speakZh(zhText); };
+
+    const bEn = document.createElement('button');
+    bEn.className = 'voice-btn voice-en';
+    bEn.innerText = '🔊 英文';
+    bEn.title = 'British English Female Audio';
+    bEn.onclick = (e) => { e.stopPropagation(); speakEn(enText); };
+
+    wrap.appendChild(bZh);
+    wrap.appendChild(bEn);
+    return wrap;
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'trace') setTimeout(initTraceCanvas, 50);
+  }
+
+  // ==================== 第一部分：詞語填充 (20個詞語庫 + 14道題目) ====================
+  const wordBank20 = [
+    { zh: "角色", en: "role / character" },
+    { zh: "豐富", en: "rich / abundant" },
+    { zh: "繁忙", en: "busy" },
+    { zh: "社交媒體", en: "social media" },
+    { zh: "決定", en: "decide / decision" },
+    { zh: "放鬆", en: "relax" },
+    { zh: "安排", en: "arrange" },
+    { zh: "資訊", en: "information" },
+    { zh: "深刻", en: "deep / profound" },
+    { zh: "一大批", en: "a large group of" },
+    { zh: "影響", en: "affect / influence" },
+    { zh: "關心", en: "care about" },
+    { zh: "重要", en: "important" },
+    { zh: "有空", en: "free / have time" },
+    { zh: "比賽", en: "competition / match" },
+    { zh: "孤單", en: "lonely" },
+    { zh: "風格", en: "style" },
+    { zh: "習慣", en: "habit" },
+    { zh: "交流", en: "exchange / communicate" },
+    { zh: "能力", en: "ability" }
+  ];
+
+  const fillQuestions14 = [
+    {
+      id: 1,
+      parts: ["中學生的學習生活非常", "，我們每天都要應付很多功課和測驗。"],
+      answers: ["繁忙"],
+      fullZh: "中學生的學習生活非常繁忙，我們每天都要應付很多功課和測驗。",
+      fullEn: "Secondary school students' study life is very busy; we have to deal with a lot of homework and tests every day."
+    },
+    {
+      id: 2,
+      parts: ["聽音樂能讓我們", "心情，忘記壓力和疲勞。"],
+      answers: ["放鬆"],
+      fullZh: "聽音樂能讓我們放鬆心情，忘記壓力和疲勞。",
+      fullEn: "Listening to music allows us to relax our mood and forget stress and fatigue."
+    },
+    {
+      id: 3,
+      parts: ["學校舉辦的音樂表演非常精彩，給全場觀眾留下了", "的印象。"],
+      answers: ["深刻"],
+      fullZh: "學校舉辦的音樂表演非常精彩，給全場觀眾留下了深刻的印象。",
+      fullEn: "The music performance organised by the school was wonderful and left a deep impression on the whole audience."
+    },
+    {
+      id: 4,
+      parts: ["體育節目讓我們可以在電視上看精彩的足球", "。"],
+      answers: ["比賽"],
+      fullZh: "體育節目讓我們可以在電視上看精彩的足球比賽。",
+      fullEn: "Sports programmes allow us to watch exciting football matches on TV."
+    },
+    {
+      id: 5,
+      parts: ["在很多不同的音樂", "中，哥哥最喜歡節奏強勁的搖滾樂。"],
+      answers: ["風格"],
+      fullZh: "在很多不同的音樂風格中，哥哥最喜歡節奏強勁的搖滾樂。",
+      fullEn: "Among many different music styles, my elder brother likes rock music with a strong rhythm the most."
+    },
+    {
+      id: 6,
+      parts: ["學校上星期組織了", "學生，一起去音樂廳欣賞傳統民樂。"],
+      answers: ["一大批"],
+      fullZh: "學校上星期組織了一大批學生，一起去音樂廳欣賞傳統民樂。",
+      fullEn: "Last week, the school organised a large group of students to go to the concert hall together to enjoy traditional folk music."
+    },
+    {
+      id: 7,
+      parts: ["許多年輕人都養成了每天使用", "（例如 Instagram和 TikTok）的", "。"],
+      answers: ["社交媒體", "習慣"],
+      fullZh: "許多年輕人都養成了每天使用社交媒體（例如 Instagram和 TikTok）的習慣。",
+      fullEn: "Many young people have developed the habit of using social media (such as Instagram and TikTok) every day."
+    },
+    {
+      id: 8,
+      parts: ["互聯網上的", "非常", "，我們能隨時查看各種知識。"],
+      answers: ["資訊", "豐富"],
+      fullZh: "互聯網上的資訊非常豐富，我們能隨時查看各種知識。",
+      fullEn: "The information on the Internet is very rich; we can check all kinds of knowledge at any time."
+    },
+    {
+      id: 9,
+      parts: ["晚上長時間看手機短片，會直接", "第二天的學習精神和身體健康。"],
+      answers: ["影響"],
+      fullZh: "晚上長時間看手機短片，會直接影響第二天的學習精神和身體健康。",
+      fullEn: "Watching short videos on a mobile phone for a long time at night will directly affect your study energy the next day and your physical health."
+    },
+    {
+      id: 10,
+      parts: ["在中文課上，同學們互相", "對看電視的看法，氣氛很融洽。"],
+      answers: ["交流"],
+      fullZh: "在中文課上，同學們互相交流對看電視的看法，氣氛很融洽。",
+      fullEn: "In Chinese class, classmates exchanged their views on watching TV with each other, and the atmosphere was very harmonious."
+    },
+    {
+      id: 11,
+      parts: ["如果我們不主動跟朋友聯絡，人與人之間的關係會變疏遠，讓人感到", "。"],
+      answers: ["孤單"],
+      fullZh: "如果我們不主動跟朋友聯絡，人與人之間的關係會變疏遠，讓人感到孤單。",
+      fullEn: "If we do not take the initiative to contact friends, interpersonal relationships will become distant and make people feel lonely."
+    },
+    {
+      id: 12,
+      parts: ["作為中學生，我們應該學會合理", "自己的時間，平衡線上與線下的生活。"],
+      answers: ["安排"],
+      fullZh: "作為中學生，我們應該學會合理安排自己的時間，平衡線上與線下的生活。",
+      fullEn: "As secondary school students, we should learn to arrange our time reasonably and balance our online and offline lives."
+    },
+    {
+      id: 13,
+      parts: ["在享受科技帶來方便的同時，我們也要多", "身邊的家人和朋友。"],
+      answers: ["關心"],
+      fullZh: "在享受科技帶來方便的同時，我們也要多關心身邊的家人和朋友。",
+      fullEn: "While enjoying the convenience brought by technology, we should also care more about our family and friends around us."
+    },
+    {
+      id: 14,
+      parts: ["寫部落格不但能記錄日常生活點滴，還能提高我們的中文寫作", "。"],
+      answers: ["能力"],
+      fullZh: "寫部落格不但能記錄日常生活點滴，還能提高我們的中文寫作能力。",
+      fullEn: "Writing a blog can not only record daily life moments, but also improve our Chinese writing ability."
+    }
+  ];
+
+  let activeFillSlot = null;
+
+  function getWordEn(zh) {
+    const found = wordBank20.find(w => w.zh === zh);
+    return found ? found.en : "";
+  }
+
+  function initFillSection() {
+    const grid = document.getElementById('wb-grid');
+    grid.innerHTML = '';
+    wordBank20.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'wb-card';
+      card.dataset.zh = item.zh;
+
+      const textDiv = document.createElement('div');
+      textDiv.className = 'wb-card-text';
+      textDiv.innerHTML = `<span class="wb-zh">${item.zh}</span><span class="wb-en">${item.en}</span>`;
+
+      const audioBtns = createAudioButtons(item.zh, item.en);
+
+      card.appendChild(textDiv);
+      card.appendChild(audioBtns);
+      card.onclick = () => onWordBankClick(card, item);
+      grid.appendChild(card);
+    });
+
+    const list = document.getElementById('fill-list');
+    list.innerHTML = '';
+    fillQuestions14.forEach((q) => {
+      const row = document.createElement('div');
+      row.className = 'fill-item';
+
+      const topRow = document.createElement('div');
+      topRow.className = 'fill-top-row';
+
+      const zhLine = document.createElement('div');
+      zhLine.className = 'fill-zh-line';
+      zhLine.appendChild(document.createTextNode(`${q.id}. `));
+
+      q.parts.forEach((partText, pIdx) => {
+        zhLine.appendChild(document.createTextNode(partText));
+        if (pIdx < q.answers.length) {
+          const ansZh = q.answers[pIdx];
+          const slot = document.createElement('span');
+          slot.className = 'slot-box';
+          slot.dataset.ans = ansZh;
+          slot.innerHTML = `<span class="slot-zh">（點擊選詞）</span><span class="slot-en">Click to fill</span>`;
+          slot.onclick = () => selectFillSlot(slot);
+          zhLine.appendChild(slot);
+        }
+      });
+
+      const audioWrap = createAudioButtons(q.fullZh, q.fullEn);
+      topRow.appendChild(zhLine);
+      topRow.appendChild(audioWrap);
+
+      const enLine = document.createElement('div');
+      enLine.className = 'fill-en-line';
+      enLine.innerText = q.fullEn;
+
+      row.appendChild(topRow);
+      row.appendChild(enLine);
+      list.appendChild(row);
+    });
+
+    const firstSlot = document.querySelector('#fill-list .slot-box');
+    if (firstSlot) {
+      firstSlot.classList.add('active-slot');
+      activeFillSlot = firstSlot;
+    }
+  }
+
+  function selectFillSlot(slotEl) {
+    if (slotEl.classList.contains('correct')) {
+      const zh = slotEl.dataset.ans;
+      speakZh(zh);
+      return;
+    }
+    document.querySelectorAll('#fill-list .slot-box').forEach(s => s.classList.remove('active-slot'));
+    slotEl.classList.add('active-slot');
+    activeFillSlot = slotEl;
+  }
+
+  function onWordBankClick(cardEl, item) {
+    speakZh(item.zh);
+    if (cardEl.classList.contains('used')) return;
+
+    if (!activeFillSlot) {
+      activeFillSlot = document.querySelector('#fill-list .slot-box:not(.correct)');
+      if (!activeFillSlot) return;
+    }
+
+    if (activeFillSlot.dataset.ans === item.zh) {
+      activeFillSlot.classList.remove('active-slot', 'wrong');
+      activeFillSlot.classList.add('correct');
+      activeFillSlot.innerHTML = `<span class="slot-zh">${item.zh}</span><span class="slot-en">${item.en}</span>`;
+      cardEl.classList.add('used');
+      addStar(1);
+
+      const nextSlot = document.querySelector('#fill-list .slot-box:not(.correct)');
+      if (nextSlot) {
+        nextSlot.classList.add('active-slot');
+        activeFillSlot = nextSlot;
+      } else {
+        activeFillSlot = null;
+      }
+    } else {
+      activeFillSlot.classList.add('wrong');
+      setTimeout(() => {
+        if (activeFillSlot) activeFillSlot.classList.remove('wrong');
+      }, 400);
+    }
+  }
+
+  function resetFillSection() {
+    initFillSection();
+    speakZh("詞語填充已經重置，請開始作答。");
+  }
+
+  function showAllFillAnswers() {
+    document.querySelectorAll('#fill-list .slot-box').forEach(slot => {
+      const zh = slot.dataset.ans;
+      const en = getWordEn(zh);
+      slot.className = 'slot-box correct';
+      slot.innerHTML = `<span class="slot-zh">${zh}</span><span class="slot-en">${en}</span>`;
+    });
+    document.querySelectorAll('#wb-grid .wb-card').forEach(card => {
+      const isAnswer = fillQuestions14.some(q => q.answers.includes(card.dataset.zh));
+      if (isAnswer) card.classList.add('used');
+    });
+    activeFillSlot = null;
+    speakZh("已經顯示全部標準答案。");
+  }
+
+  // ==================== 第二部分：排句成段 (不預先顯示標準答案，附中英解析) ====================
+  const reorderItems = [
+    {
+      letter: "A",
+      zh: "此外，長時間看手機會減少和朋友聊天。",
+      en: "Furthermore, looking at a mobile phone for a long time will reduce chatting with friends."
+    },
+    {
+      letter: "B",
+      zh: "雖然社交媒體帶來了很多方便。",
+      en: "Although social media has brought a lot of convenience."
+    },
+    {
+      letter: "C",
+      zh: "但是太晚睡覺玩手機會影響健康。",
+      en: "However, sleeping too late to play on the mobile phone will affect health."
+    },
+    {
+      letter: "D",
+      zh: "所以，我們應該合理安排使用時間。",
+      en: "Therefore, we should arrange our usage time reasonably."
+    }
+  ];
+  const correctOrder = ["B", "C", "A", "D"];
+  let userOrder = [];
+
+  function initReorderSection() {
+    userOrder = [];
+    const pool = document.getElementById('reorder-pool');
+    pool.innerHTML = '';
+
+    reorderItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'sentence-card';
+      card.id = 'reorder-card-' + item.letter;
+
+      const left = document.createElement('div');
+      left.style.display = 'flex';
+      left.style.alignItems = 'center';
+      left.style.gap = '14px';
+
+      const badge = document.createElement('div');
+      badge.className = 'letter-badge';
+      badge.innerText = item.letter;
+
+      const textWrap = document.createElement('div');
+      textWrap.innerHTML = `
+        <div style="font-size:21px; font-weight:900;">${item.zh}</div>
+        <div style="font-size:15px; font-weight:700; color:#475569;">${item.en}</div>
+      `;
+
+      left.appendChild(badge);
+      left.appendChild(textWrap);
+
+      const audios = createAudioButtons(`${item.letter}，${item.zh}`, `${item.letter}. ${item.en}`);
+
+      card.appendChild(left);
+      card.appendChild(audios);
+      card.onclick = () => pickReorderCard(item);
+      pool.appendChild(card);
+    });
+
+    renderReorderSlots();
+    document.getElementById('reorder-feedback').style.display = 'none';
+  }
+
+  function renderReorderSlots() {
+    const slotsBox = document.getElementById('reorder-slots');
+    slotsBox.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+      const box = document.createElement('div');
+      const item = userOrder[i];
+      box.className = 'order-target' + (item ? ' filled' : '');
+      if (item) {
+        box.innerHTML = `
+          <div style="font-size:22px; font-weight:900; color:#1D4ED8;">第 ${i + 1} 句：【 ${item.letter} 】</div>
+          <div style="font-size:18px; font-weight:800; margin-top:4px;">${item.zh}</div>
+          <div style="font-size:13px; color:#475569;">${item.en}</div>
+        `;
+      } else {
+        box.innerHTML = `<div style="color:#64748B; font-weight:800;">第 ${i + 1} 句 (Box ${i + 1})<br>👆 點擊上方句子放入</div>`;
+      }
+      slotsBox.appendChild(box);
+    }
+  }
+
+  function pickReorderCard(item) {
+    if (userOrder.some(x => x.letter === item.letter)) return;
+    speakZh(item.zh);
+    userOrder.push(item);
+    document.getElementById('reorder-card-' + item.letter).classList.add('placed');
+    renderReorderSlots();
+
+    if (userOrder.length === 4) {
+      const joined = userOrder.map(x => x.letter).join('');
+      const fb = document.getElementById('reorder-feedback');
+      fb.style.display = 'block';
+      if (joined === 'BCAD') {
+        fb.style.background = '#D1FAE5';
+        fb.style.border = '3px solid #059669';
+        fb.style.color = '#065F46';
+        fb.innerHTML = `
+          <div>🎉 答對了！正確順序是 <b>B ➔ C ➔ A ➔ D</b>！（獲得 +2 ⭐）</div>
+          <div style="margin-top:6px;">💡 <b>答案解析：</b>先用「雖然… (B)」指出社交媒體的好處，再用「但是… (C)」轉折指出對健康的壞處，接著用「此外… (A)」補充減少和朋友聊天的壞處，最後用「所以… (D)」總結應該合理安排時間。</div>
+          <div style="margin-top:4px; font-size:15px; color:#047857;"><b>Explanation:</b> Start with "Although... (B)" to state the benefit of social media, then use "However... (C)" to contrast with its harm to health, add another point with "Furthermore... (A)" about reducing chatting with friends, and finally conclude with "Therefore... (D)" that we should arrange our time reasonably.</div>
+        `;
+        addStar(2);
+      } else {
+        fb.style.background = '#FFE4E6';
+        fb.style.border = '3px solid #E11D48';
+        fb.style.color = '#881337';
+        fb.innerHTML = `
+          <div>❌ 你排的順序是 <b>${joined}</b>，還不太通順喔！</div>
+          <div style="margin-top:6px;">💡 <b>提示解析：</b>請留意句子開頭的連接詞：先講「雖然… (B)」，再轉折「但是… (C)」，接著補充「此外… (A)」，最後總結「所以… (D)」。請按「重新排序」再試一次！</div>
+          <div style="margin-top:4px; font-size:15px; color:#9F1239;"><b>Hint & Explanation:</b> Pay attention to the connectives at the beginning of each sentence: First "Although... (B)", then contrast with "However... (C)", add another point with "Furthermore... (A)", and conclude with "Therefore... (D)". Click "Reset" to try again!</div>
+        `;
+      }
+    }
+  }
+
+  function resetReorder() {
+    initReorderSection();
+  }
+
+  function showReorderAnswer() {
+    userOrder = correctOrder.map(l => reorderItems.find(x => x.letter === l));
+    reorderItems.forEach(item => {
+      document.getElementById('reorder-card-' + item.letter).classList.add('placed');
+    });
+    renderReorderSlots();
+    const fb = document.getElementById('reorder-feedback');
+    fb.style.display = 'block';
+    fb.style.background = '#D1FAE5';
+    fb.style.border = '3px solid #059669';
+    fb.style.color = '#065F46';
+    fb.innerHTML = `
+      <div>✅ 標準答案 Standard Answer：<b>BCAD</b></div>
+      <div style="margin-top:6px;">💡 <b>答案解析：</b>B（雖然…）➔ C（但是…）➔ A（此外…）➔ D（所以…）。</div>
+      <div style="margin-top:4px; font-size:15px; color:#047857;"><b>Explanation:</b> B ("Although..." states the advantage) ➔ C ("However..." states the harm to health) ➔ A ("Furthermore..." adds another disadvantage) ➔ D ("Therefore..." gives the conclusion).</div>
+    `;
+  }
+
+  // ==================== 第三 & 四部分：句式造句 及 詞語造句 (簡單易寫中文字，無英文字母，≥15字) ====================
+  const makingTasks = [
+    {
+      type: "三、句式造句 (1)",
+      promptZh: "「一邊·······一邊·······」",
+      promptEn: "Pattern: '一邊... 一邊...' (Doing Action A while doing Action B)",
+      sampleZh: "放學後，我和妹妹在家裏一邊吃美味的水果，一邊看電視節目。",
+      sampleEn: "After school, my younger sister and I eat delicious fruit while watching TV programmes at home.",
+      chunks: [
+        { zh: "放學後，我和妹妹在家裏", en: "After school, my sister and I at home" },
+        { zh: "一邊吃美味的水果，", en: "while eating delicious fruit," },
+        { zh: "一邊看電視節目。", en: "watch TV programmes." },
+        { zh: "一邊聽好聽的音樂，", en: "while listening to nice music," },
+        { zh: "一邊做今天的中文功課。", en: "do today's Chinese homework." }
+      ]
+    },
+    {
+      type: "三、句式造句 (2)",
+      promptZh: "「·······例如：·······」",
+      promptEn: "Pattern: '... 例如：...' (... for example: ...)",
+      sampleZh: "我喜歡吃很多不同種類的水果，例如：蘋果、香蕉和西瓜。",
+      sampleEn: "I like eating many different kinds of fruit, for example: apples, bananas and watermelons.",
+      chunks: [
+        { zh: "我喜歡吃很多不同種類的水果，", en: "I like eating many different kinds of fruit," },
+        { zh: "例如：蘋果、香蕉和西瓜。", en: "for example: apples, bananas and watermelons." },
+        { zh: "學校裏有很多好玩的球類活動，", en: "There are many fun ball activities in school," },
+        { zh: "例如：足球、籃球和乒乓球。", en: "for example: football, basketball and table tennis." }
+      ]
+    },
+    {
+      type: "四、詞語造句 (1)",
+      promptZh: "分享 (to share)",
+      promptEn: "Word: 分享 (to share) — Must be at least 15 Chinese characters",
+      sampleZh: "今天是我的生日，我帶了美味的生日蛋糕回學校和同學一起分享。",
+      sampleEn: "Today is my birthday; I brought a delicious birthday cake back to school to share with my classmates.",
+      chunks: [
+        { zh: "今天是我的生日，", en: "Today is my birthday," },
+        { zh: "我帶了美味的生日蛋糕", en: "I brought a delicious birthday cake" },
+        { zh: "回學校和同學一起分享。", en: "back to school to share with my classmates." }
+      ]
+    },
+    {
+      type: "四、詞語造句 (2)",
+      promptZh: "經歷 (experience)",
+      promptEn: "Word: 經歷 (experience) — Must be at least 15 Chinese characters",
+      sampleZh: "上星期五，我和好朋友一起去海邊看日落，這是一次開心的經歷。",
+      sampleEn: "Last Friday, I went to the seaside with my good friends to watch the sunset; this was a happy experience.",
+      chunks: [
+        { zh: "上星期五，我和好朋友", en: "Last Friday, my good friends and I" },
+        { zh: "一起去海邊看日落，", en: "went to the seaside to watch the sunset together," },
+        { zh: "這是一次十分開心的經歷。", en: "this was a very happy experience." }
+      ]
+    }
+  ];
+
+  function initMakingSection() {
+    const container = document.getElementById('making-container');
+    container.innerHTML = '';
+
+    makingTasks.forEach((task) => {
+      const card = document.createElement('div');
+      card.className = 'making-card';
+
+      const header = document.createElement('div');
+      header.className = 'making-title';
+      header.innerHTML = `
+        <div>
+          <span>${task.type}：${task.promptZh}</span>
+          <div style="font-size:15px; color:#475569;">${task.promptEn}</div>
+        </div>
+      `;
+      header.appendChild(createAudioButtons(task.sampleZh, task.sampleEn));
+
+      const sampleBox = document.createElement('div');
+      sampleBox.style.background = '#FFFBEB';
+      sampleBox.style.border = '2px solid #F59E0B';
+      sampleBox.style.borderRadius = '14px';
+      sampleBox.style.padding = '12px 16px';
+      sampleBox.style.marginBottom = '10px';
+      sampleBox.innerHTML = `
+        <div style="font-weight:900; color:#B45309;">🌟 簡單易寫參考例句（${task.sampleZh.length} 字 ≥ 15 字）：</div>
+        <div style="font-size:21px; font-weight:900; color:#1E293B; margin-top:4px;">${task.sampleZh}</div>
+        <div style="font-size:15px; color:#475569; font-weight:700;">${task.sampleEn}</div>
+      `;
+
+      const chunkTitle = document.createElement('div');
+      chunkTitle.style.fontSize = '15px';
+      chunkTitle.style.fontWeight = '800';
+      chunkTitle.style.color = '#6B21A8';
+      chunkTitle.innerText = '👇 點擊下方詞組積木，自動拼出超過 15 字的簡單中文句子（Click chunks to build your sentence）：';
+
+      const chunkWrap = document.createElement('div');
+      chunkWrap.className = 'Word-chunks';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'making-input';
+      input.placeholder = '在此輸入或點擊上方詞組拼出句子（不少於 15 字）...';
+
+      const counterRow = document.createElement('div');
+      counterRow.style.display = 'flex';
+      counterRow.style.justifyContent = 'space-between';
+      counterRow.style.alignItems = 'center';
+      counterRow.style.marginTop = '10px';
+      counterRow.style.flexWrap = 'wrap';
+      counterRow.style.gap = '10px';
+
+      const counterBadge = document.createElement('span');
+      counterBadge.className = 'char-counter';
+      counterBadge.innerText = '目前字數：0 / 15 字 (Need ≥15 chars)';
+
+      const updateCount = () => {
+        const len = input.value.trim().length;
+        counterBadge.innerText = `目前字數 Character Count：${len} / 15 字 ${len >= 15 ? '✅ 達標 Pass!' : '(未滿 15 字)'}`;
+        counterBadge.className = 'char-counter' + (len >= 15 ? ' pass' : '');
+      };
+
+      input.oninput = updateCount;
+
+      task.chunks.forEach(ch => {
+        const cBtn = document.createElement('button');
+        cBtn.className = 'chunk-btn';
+        cBtn.innerHTML = `<div style="font-size:17px; font-weight:900; color:#1E293B;">➕ ${ch.zh}</div><div style="font-size:12px; color:#475569; font-weight:700;">${ch.en}</div>`;
+        cBtn.onclick = () => {
+          input.value += ch.zh;
+          updateCount();
+          speakZh(ch.zh);
+        };
+        chunkWrap.appendChild(cBtn);
+      });
+
+      const btnGroup = document.createElement('div');
+      btnGroup.style.display = 'flex';
+      btnGroup.style.gap = '8px';
+
+      const fillSampleBtn = document.createElement('button');
+      fillSampleBtn.className = 'btn btn-warning';
+      fillSampleBtn.innerText = '✨ 填入參考例句';
+      fillSampleBtn.onclick = () => {
+        input.value = task.sampleZh;
+        updateCount();
+        speakZh(task.sampleZh);
+      };
+
+      const speakMyBtn = document.createElement('button');
+      speakMyBtn.className = 'btn btn-primary';
+      speakMyBtn.innerText = '🔊 粵語朗讀句子';
+      speakMyBtn.onclick = () => {
+        if (input.value.trim()) speakZh(input.value);
+      };
+
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'btn btn-danger';
+      clearBtn.innerText = '🗑️ 清空';
+      clearBtn.onclick = () => {
+        input.value = '';
+        updateCount();
+      };
+
+      btnGroup.appendChild(fillSampleBtn);
+      btnGroup.appendChild(speakMyBtn);
+      btnGroup.appendChild(clearBtn);
+
+      counterRow.appendChild(counterBadge);
+      counterRow.appendChild(btnGroup);
+
+      card.appendChild(header);
+      card.appendChild(sampleBox);
+      card.appendChild(chunkTitle);
+      card.appendChild(chunkWrap);
+      card.appendChild(input);
+      card.appendChild(counterRow);
+      container.appendChild(card);
+    });
+  }
+
+  // ==================== 第五部分：量詞運用（每題只可選一個答案並判斷對錯） ====================
+  const measureMCs = [
+    {
+      no: 1,
+      zh: "我在社交媒體上發佈了一 ( ___ ) 弟弟吃雪糕的照片。",
+      fullZh: "我在社交媒體上發佈了一張弟弟吃雪糕的照片。",
+      en: "I posted a photo of my younger brother eating ice cream on social media.",
+      ans: "A",
+      reasonZh: "「照片」是平面的物品，所以用「張」。",
+      reasonEn: "'照片' (photo) is a flat object, so we use the measure word '張'.",
+      options: [
+        { letter: "A", zh: "張", en: "piece / sheet (for photos/paper)" },
+        { letter: "B", zh: "節", en: "section / lesson" },
+        { letter: "C", zh: "句", en: "sentence" },
+        { letter: "D", zh: "門", en: "subject / branch" }
+      ]
+    },
+    {
+      no: 2,
+      zh: "電腦室裏添置了一 ( ___ ) 全新的電腦。",
+      fullZh: "電腦室裏添置了一台全新的電腦。",
+      en: "A brand-new computer was added to the computer room.",
+      ans: "C",
+      reasonZh: "「電腦」是機器或電器，所以用「台」。",
+      reasonEn: "'電腦' (computer) is a machine/appliance, so we use the measure word '台'.",
+      options: [
+        { letter: "A", zh: "封", en: "letter / envelope" },
+        { letter: "B", zh: "塊", en: "piece / lump" },
+        { letter: "C", zh: "台", en: "set / unit (for machines/computers)" },
+        { letter: "D", zh: "條", en: "strip / long object" }
+      ]
+    },
+    {
+      no: 3,
+      zh: "上星期五，學校組織了一大 ( ___ ) 學生去聽音樂會。",
+      fullZh: "上星期五，學校組織了一大批學生去聽音樂會。",
+      en: "Last Friday, the school organised a large group (batch) of students to go to a concert.",
+      ans: "B",
+      reasonZh: "形容很多人一起參與，用「一大批」學生。",
+      reasonEn: "To describe a large group of people together, we use '批' (一大批學生).",
+      options: [
+        { letter: "A", zh: "雙", en: "pair" },
+        { letter: "B", zh: "批", en: "batch / group (of people)" },
+        { letter: "C", zh: "隻", en: "single (for animals)" },
+        { letter: "D", zh: "架", en: "frame (for planes/cars)" }
+      ]
+    },
+    {
+      no: 4,
+      zh: "畢業典禮上，同學們合唱了一 ( ___ ) 動人的英文歌。",
+      fullZh: "畢業典禮上，同學們合唱了一首動人的英文歌。",
+      en: "At the graduation ceremony, classmates sang a moving English song together.",
+      ans: "A",
+      reasonZh: "歌曲和詩歌的量詞是「首」。",
+      reasonEn: "The measure word for songs and poems is '首'.",
+      options: [
+        { letter: "A", zh: "首", en: "measure word for songs / poems" },
+        { letter: "B", zh: "場", en: "event / match" },
+        { letter: "C", zh: "條", en: "strip" },
+        { letter: "D", zh: "本", en: "volume (for books)" }
+      ]
+    },
+    {
+      no: 5,
+      zh: "昨天，我和朋友在電影院看了一 ( ___ ) 精彩的電影。",
+      fullZh: "昨天，我和朋友在電影院看了一部精彩的電影。",
+      en: "Yesterday, my friend and I watched a wonderful film at the cinema.",
+      ans: "B",
+      reasonZh: "「電影」的作品量詞是「部」。",
+      reasonEn: "The measure word for films/movies is '部'.",
+      options: [
+        { letter: "A", zh: "首", en: "for songs" },
+        { letter: "B", zh: "部", en: "measure word for films / movies" },
+        { letter: "C", zh: "隻", en: "for animals" },
+        { letter: "D", zh: "張", en: "for flat objects" }
+      ]
+    }
+  ];
+
+  const measureFills = [
+    {
+      no: 1,
+      before: "班長在博客上發表了一",
+      after: "介紹香港美食的文章。",
+      ans: "篇",
+      ansEn: "measure word for articles / essays",
+      fullZh: "班長在博客上發表了一篇介紹香港美食的文章。",
+      fullEn: "The class monitor published an article introducing Hong Kong food on the blog."
+    },
+    {
+      no: 2,
+      before: "社交媒體是一",
+      after: "雙刃劍，能同時帶來好處和壞處。",
+      ans: "把",
+      ansEn: "measure word for objects with a handle (e.g., sword/knife)",
+      fullZh: "社交媒體是一把雙刃劍，能同時帶來好處和壞處。",
+      fullEn: "Social media is a double-edged sword that can bring both benefits and harms at the same time."
+    },
+    {
+      no: 3,
+      before: "媽媽在商場買了一",
+      after: "漂亮的書包給妹妹。",
+      ans: "個",
+      ansEn: "general measure word (for schoolbag)",
+      fullZh: "媽媽在商場買了一個漂亮的書包給妹妹。",
+      fullEn: "Mum bought a pretty schoolbag for my younger sister at the shopping mall."
+    },
+    {
+      no: 4,
+      before: "妹妹從圖書館借了一",
+      after: "有趣的故事書。",
+      ans: "本",
+      ansEn: "measure word for books",
+      fullZh: "妹妹從圖書館借了一本有趣的故事書。",
+      fullEn: "My younger sister borrowed an interesting storybook from the library."
+    },
+    {
+      no: 5,
+      before: "學校禮堂剛結束了一",
+      after: "精彩的音樂比賽。",
+      ans: "場",
+      ansEn: "measure word for competitions / performances",
+      fullZh: "學校禮堂剛結束了一場精彩的音樂比賽。",
+      fullEn: "An exciting music competition has just ended in the school hall."
+    }
+  ];
+
+  let activeMeasureSlot = null;
+
+  function initMeasureSection() {
+    const mcContainer = document.getElementById('measure-mc-list');
+    mcContainer.innerHTML = '';
+
+    measureMCs.forEach(q => {
+      const card = document.createElement('div');
+      card.className = 'fill-item';
+
+      const top = document.createElement('div');
+      top.className = 'fill-top-row';
+
+      const title = document.createElement('div');
+      title.className = 'fill-zh-line';
+      title.id = `mc-title-${q.no}`;
+      title.innerText = `${q.no}. ${q.zh}`;
+
+      top.appendChild(title);
+      top.appendChild(createAudioButtons(q.fullZh, q.en));
+
+      const enSub = document.createElement('div');
+      enSub.className = 'fill-en-line';
+      enSub.innerText = q.en;
+
+      const optGrid = document.createElement('div');
+      optGrid.className = 'mc-options';
+
+      const feedbackBox = document.createElement('div');
+      feedbackBox.id = `mc-fb-${q.no}`;
+      feedbackBox.style.display = 'none';
+      feedbackBox.style.marginTop = '10px';
+      feedbackBox.style.padding = '10px 14px';
+      feedbackBox.style.borderRadius = '12px';
+      feedbackBox.style.fontWeight = '800';
+      feedbackBox.style.fontSize = '16px';
+
+      let answered = false;
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('div');
+        btn.className = 'mc-btn';
+        btn.dataset.letter = opt.letter;
+        btn.innerHTML = `
+          <div>
+            <span style="font-size:21px; color:#1D4ED8;">${opt.letter}. ${opt.zh}</span>
+            <div style="font-size:12px; color:#475569;">${opt.en}</div>
+          </div>
+        `;
+        const miniAudio = createAudioButtons(`${opt.letter}，${opt.zh}`, `${opt.letter}, ${opt.en}`);
+        btn.appendChild(miniAudio);
+
+        btn.onclick = () => {
+          // 只能選擇一個答案：一旦作答即鎖定該題所有選項
+          if (answered) return;
+          answered = true;
+
+          const allBtns = optGrid.querySelectorAll('.mc-btn');
+          allBtns.forEach(b => b.classList.add('locked'));
+
+          const correctOpt = q.options.find(o => o.letter === q.ans);
+          feedbackBox.style.display = 'block';
+
+          if (opt.letter === q.ans) {
+            btn.classList.add('correct');
+            document.getElementById(`mc-title-${q.no}`).innerHTML =
+              `${q.no}. ${q.zh.replace('___', `<b style="color:#059669;"> ${opt.letter} (${opt.zh}) </b>`)}`;
+            feedbackBox.style.background = '#D1FAE5';
+            feedbackBox.style.border = '2px solid #059669';
+            feedbackBox.style.color = '#065F46';
+            feedbackBox.innerHTML = `🎉 答對了！你選擇了 <b>${opt.letter}. ${opt.zh}</b>。<br>${q.reasonZh}<br><span style="font-size:14px;">Correct! ${q.reasonEn}</span>`;
+            speakZh(`答啱喇！答案係 ${opt.letter}，${opt.zh}。`);
+            addStar(1);
+          } else {
+            btn.classList.add('wrong');
+            allBtns.forEach(b => {
+              if (b.dataset.letter === q.ans) b.classList.add('correct');
+            });
+            document.getElementById(`mc-title-${q.no}`).innerHTML =
+              `${q.no}. ${q.zh.replace('___', `<b style="color:#E11D48;"> ${correctOpt.letter} (${correctOpt.zh}) </b>`)}`;
+            feedbackBox.style.background = '#FFE4E6';
+            feedbackBox.style.border = '2px solid #E11D48';
+            feedbackBox.style.color = '#881337';
+            feedbackBox.innerHTML = `❌ 答錯了！你選擇了 <b>${opt.letter}. ${opt.zh}</b>，標準答案是 <b>${correctOpt.letter}. ${correctOpt.zh}</b>。<br>${q.reasonZh}<br><span style="font-size:14px;">Incorrect! The correct answer is ${correctOpt.letter} (${correctOpt.zh}). ${q.reasonEn}</span>`;
+            speakZh(`答錯咗，標準答案係 ${correctOpt.letter}，${correctOpt.zh}。`);
+          }
+        };
+        optGrid.appendChild(btn);
+      });
+
+      card.appendChild(top);
+      card.appendChild(enSub);
+      card.appendChild(optGrid);
+      card.appendChild(feedbackBox);
+      mcContainer.appendChild(card);
+    });
+
+    // B. 量詞填充
+    const bankBox = document.getElementById('measure-fill-bank');
+    bankBox.innerHTML = '';
+    measureFills.forEach(m => {
+      const chip = document.createElement('div');
+      chip.className = 'wb-card';
+      chip.dataset.ans = m.ans;
+      chip.innerHTML = `<div class="wb-card-text"><span class="wb-zh">${m.ans}</span><span class="wb-en">${m.ansEn}</span></div>`;
+      chip.appendChild(createAudioButtons(m.ans, m.ansEn));
+      chip.onclick = () => {
+        speakZh(m.ans);
+        if (!activeMeasureSlot) {
+          activeMeasureSlot = document.querySelector('#measure-fill-list .slot-box:not(.correct)');
+        }
+        if (!activeMeasureSlot) return;
+        if (activeMeasureSlot.dataset.ans === m.ans) {
+          activeMeasureSlot.className = 'slot-box correct';
+          activeMeasureSlot.innerHTML = `<span class="slot-zh">${m.ans}</span><span class="slot-en">${m.ansEn}</span>`;
+          chip.classList.add('used');
+          addStar(1);
+          activeMeasureSlot = document.querySelector('#measure-fill-list .slot-box:not(.correct)');
+          if (activeMeasureSlot) activeMeasureSlot.classList.add('active-slot');
+        } else {
+          activeMeasureSlot.classList.add('wrong');
+          setTimeout(() => activeMeasureSlot && activeMeasureSlot.classList.remove('wrong'), 400);
+        }
+      };
+      bankBox.appendChild(chip);
+    });
+
+    const fList = document.getElementById('measure-fill-list');
+    fList.innerHTML = '';
+    measureFills.forEach((m, idx) => {
+      const row = document.createElement('div');
+      row.className = 'fill-item';
+
+      const top = document.createElement('div');
+      top.className = 'fill-top-row';
+
+      const line = document.createElement('div');
+      line.className = 'fill-zh-line';
+      line.appendChild(document.createTextNode(`${m.no}. ${m.before} `));
+
+      const slot = document.createElement('span');
+      slot.className = 'slot-box' + (idx === 0 ? ' active-slot' : '');
+      slot.dataset.ans = m.ans;
+      slot.dataset.en = m.ansEn;
+      slot.innerHTML = `<span class="slot-zh">（選量詞）</span><span class="slot-en">Click measure word</span>`;
+      slot.onclick = () => {
+        document.querySelectorAll('#measure-fill-list .slot-box').forEach(s => s.classList.remove('active-slot'));
+        slot.classList.add('active-slot');
+        activeMeasureSlot = slot;
+      };
+      if (idx === 0) activeMeasureSlot = slot;
+
+      line.appendChild(slot);
+      line.appendChild(document.createTextNode(` ${m.after}`));
+
+      top.appendChild(line);
+      top.appendChild(createAudioButtons(m.fullZh, m.fullEn));
+
+      const enLine = document.createElement('div');
+      enLine.className = 'fill-en-line';
+      enLine.innerText = m.fullEn;
+
+      row.appendChild(top);
+      row.appendChild(enLine);
+      fList.appendChild(row);
+    });
+  }
+
+  function showAllMeasureAnswers() {
+    measureMCs.forEach(q => {
+      const opt = q.options.find(o => o.letter === q.ans);
+      document.getElementById(`mc-title-${q.no}`).innerHTML =
+        `${q.no}. ${q.zh.replace('___', `<b style="color:#059669;"> ${opt.letter} (${opt.zh}) </b>`)}`;
+      const fb = document.getElementById(`mc-fb-${q.no}`);
+      if (fb) {
+        fb.style.display = 'block';
+        fb.style.background = '#D1FAE5';
+        fb.style.border = '2px solid #059669';
+        fb.style.color = '#065F46';
+        fb.innerHTML = `✅ 標準答案 Standard Answer：<b>${opt.letter}. ${opt.zh}</b> — ${q.reasonZh} (${q.reasonEn})`;
+      }
+    });
+    document.querySelectorAll('#measure-fill-list .slot-box').forEach(slot => {
+      slot.className = 'slot-box correct';
+      slot.innerHTML = `<span class="slot-zh">${slot.dataset.ans}</span><span class="slot-en">${slot.dataset.en}</span>`;
+    });
+    speakZh("已經顯示量詞運用全部標準答案。");
+  }
+
+  // ==================== 第六部分：GCSE 字詞翻譯 (14個中英生詞) ====================
+  const gcseVocab14 = [
+    { zh: "將來", en: "future" },
+    { zh: "星期", en: "week" },
+    { zh: "週末", en: "weekend" },
+    { zh: "電腦", en: "Computer" },
+    { zh: "下載", en: "to download" },
+    { zh: "鼓勵", en: "Encourage" },
+    { zh: "電郵", en: "e-mail" },
+    { zh: "晚安", en: "Good night" },
+    { zh: "電影", en: "movies" },
+    { zh: "聊天室", en: "Chat room" },
+    { zh: "網站", en: "website" },
+    { zh: "社交媒體", en: "Social media" },
+    { zh: "科技", en: "technology" },
+    { zh: "網友", en: "e-pal" }
+  ];
+
+  let gcseLeftSel = null;
+  let gcseRightSel = null;
+
+  function initGcseVocabSection() {
+    const grid = document.getElementById('gcse-grid');
+    grid.innerHTML = '';
+    gcseVocab14.forEach((v, idx) => {
+      const card = document.createElement('div');
+      card.className = 'gcse-card';
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:14px; font-weight:800; color:#92400E;">#${idx + 1} GCSE Vocab</span>
+        </div>
+        <div class="gcse-zh">${v.zh}</div>
+        <div class="gcse-en">${v.en}</div>
+      `;
+      card.appendChild(createAudioButtons(v.zh, v.en));
+      grid.appendChild(card);
+    });
+
+    shuffleGcseMatch();
+  }
+
+  function shuffleGcseMatch() {
+    gcseLeftSel = null;
+    gcseRightSel = null;
+    const leftCol = document.getElementById('gcse-match-left');
+    const rightCol = document.getElementById('gcse-match-right');
+    leftCol.innerHTML = '';
+    rightCol.innerHTML = '';
+
+    const leftArr = gcseVocab14.map((v, i) => ({ ...v, id: i })).sort(() => Math.random() - 0.5);
+    const rightArr = gcseVocab14.map((v, i) => ({ ...v, id: i })).sort(() => Math.random() - 0.5);
+
+    leftArr.forEach(item => {
+      const btn = document.createElement('div');
+      btn.className = 'mc-btn';
+      btn.innerHTML = `<span style="font-size:22px; font-weight:900;">${item.zh}</span>`;
+      const bZh = document.createElement('button');
+      bZh.className = 'voice-btn voice-zh';
+      bZh.innerText = '🔊 粵語';
+      bZh.onclick = (e) => { e.stopPropagation(); speakZh(item.zh); };
+      btn.appendChild(bZh);
+
+      btn.onclick = () => {
+        if (btn.classList.contains('correct')) return;
+        speakZh(item.zh);
+        document.querySelectorAll('#gcse-match-left .mc-btn').forEach(x => x.style.borderColor = '#CBD5E1');
+        btn.style.borderColor = '#3B82F6';
+        gcseLeftSel = { el: btn, item };
+        checkGcsePair();
+      };
+      leftCol.appendChild(btn);
+    });
+
+    rightArr.forEach(item => {
+      const btn = document.createElement('div');
+      btn.className = 'mc-btn';
+      btn.innerHTML = `<span style="font-size:20px; font-weight:800; color:#1E40AF;">${item.en}</span>`;
+      const bEn = document.createElement('button');
+      bEn.className = 'voice-btn voice-en';
+      bEn.innerText = '🔊 英文';
+      bEn.onclick = (e) => { e.stopPropagation(); speakEn(item.en); };
+      btn.appendChild(bEn);
+
+      btn.onclick = () => {
+        if (btn.classList.contains('correct')) return;
+        speakEn(item.en);
+        document.querySelectorAll('#gcse-match-right .mc-btn').forEach(x => x.style.borderColor = '#CBD5E1');
+        btn.style.borderColor = '#3B82F6';
+        gcseRightSel = { el: btn, item };
+        checkGcsePair();
+      };
+      rightCol.appendChild(btn);
+    });
+  }
+
+  function checkGcsePair() {
+    if (!gcseLeftSel || !gcseRightSel) return;
+    if (gcseLeftSel.item.id === gcseRightSel.item.id) {
+      gcseLeftSel.el.classList.add('correct');
+      gcseRightSel.el.classList.add('correct');
+      addStar(1);
+      gcseLeftSel = null;
+      gcseRightSel = null;
+    } else {
+      const l = gcseLeftSel.el;
+      const r = gcseRightSel.el;
+      l.classList.add('wrong');
+      r.classList.add('wrong');
+      setTimeout(() => {
+        l.classList.remove('wrong');
+        r.classList.remove('wrong');
+        l.style.borderColor = '#CBD5E1';
+        r.style.borderColor = '#CBD5E1';
+      }, 400);
+      gcseLeftSel = null;
+      gcseRightSel = null;
+    }
+  }
+
+  // ==================== 第七部分：GCSE 句子翻譯 (隱藏題目下標準答案、選項只顯示單語、顯示標準答案時呈上下雙語方塊) ====================
+  const gcseSentences4 = [
+    {
+      direction: "請將以下句子翻譯成中文 (Translate into Chinese) — Q1",
+      source: "I often watch films on the internet at weekends to relax.",
+      zh: "週末時，我常在網路上看電影來放鬆。",
+      en: "I often watch films on the internet at weekends to relax.",
+      tokens: [
+        { top: "週末時，", sub: "at weekends" },
+        { top: "我常", sub: "I often" },
+        { top: "在網路上", sub: "on the internet" },
+        { top: "看電影", sub: "watch films" },
+        { top: "來放鬆。", sub: "to relax" }
+      ]
+    },
+    {
+      direction: "請將以下句子翻譯成中文 (Translate into Chinese) — Q2",
+      source: "Besides sharing photos, we can also chat with friends at any time.",
+      zh: "除了分享照片，我們還可以隨時跟朋友聊天。",
+      en: "Besides sharing photos, we can also chat with friends at any time.",
+      tokens: [
+        { top: "除了", sub: "Besides" },
+        { top: "分享照片，", sub: "sharing photos," },
+        { top: "我們還可以", sub: "we can also" },
+        { top: "隨時", sub: "at any time" },
+        { top: "跟朋友聊天。", sub: "chat with friends." }
+      ]
+    },
+    {
+      direction: "請將以下句子翻譯成英文 (Translate into British English) — Q3",
+      source: "長時間看手機螢幕會影響身體健康。",
+      zh: "長時間看手機螢幕會影響身體健康。",
+      en: "Staring at a mobile phone screen for a long time can affect your health.",
+      tokens: [
+        { top: "Staring at", sub: "看/盯著" },
+        { top: "a mobile phone screen", sub: "手機螢幕" },
+        { top: "for a long time", sub: "長時間" },
+        { top: "can affect", sub: "會影響" },
+        { top: "your health.", sub: "身體健康" }
+      ]
+    },
+    {
+      direction: "請將以下句子翻譯成英文 (Translate into British English) — Q4",
+      source: "過度使用社交媒體會對青少年的健康產生負面影響。",
+      zh: "過度使用社交媒體會對青少年的健康產生負面影響。",
+      en: "Excessive use of social media can have a negative impact on the health of adolescents.",
+      tokens: [
+        { top: "Excessive use of", sub: "過度使用" },
+        { top: "social media", sub: "社交媒體" },
+        { top: "can have a negative impact", sub: "會產生負面影響" },
+        { top: "on the health", sub: "對健康" },
+        { top: "of adolescents.", sub: "青少年的" }
+      ]
+    }
+  ];
+
+  function renderBilingualBlocksHTML(tokens) {
+    return tokens.map(tk => `
+      <div class="bilingual-ans-block">
+        <span class="bilingual-ans-top">${tk.top}</span>
+        <span class="bilingual-ans-sub">${tk.sub}</span>
+      </div>
+    `).join('');
+  }
+
+  function initSentenceTransSection() {
+    const container = document.getElementById('trans-container');
+    container.innerHTML = '';
+
+    gcseSentences4.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'trans-card';
+
+      const topRow = document.createElement('div');
+      topRow.style.display = 'flex';
+      topRow.style.justifyContent = 'space-between';
+      topRow.style.alignItems = 'center';
+      topRow.style.flexWrap = 'wrap';
+      topRow.style.gap = '10px';
+
+      const badge = document.createElement('div');
+      badge.style.fontWeight = '900';
+      badge.style.color = '#1D4ED8';
+      badge.innerText = item.direction;
+
+      topRow.appendChild(badge);
+      topRow.appendChild(createAudioButtons(item.zh, item.en));
+
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'trans-prompt';
+      promptDiv.innerText = `題目 Question：${item.source}`;
+
+      const buildArea = document.createElement('div');
+      buildArea.className = 'trans-target-box';
+      buildArea.id = `trans-build-${idx}`;
+      buildArea.innerHTML = `<span style="color:#64748B; font-size:16px; font-weight:700;">👆 請按正確順序點擊下方詞語方塊作答 (Click the word blocks below in the correct order)...</span>`;
+
+      let builtTokens = [];
+
+      const poolDiv = document.createElement('div');
+      poolDiv.className = 'Word-chunks';
+      poolDiv.id = `trans-pool-${idx}`;
+
+      const shuffled = [...item.tokens].sort(() => Math.random() - 0.5);
+      shuffled.forEach(tk => {
+        const btn = document.createElement('button');
+        btn.className = 'chunk-btn';
+        // 選項方塊一開始只顯示目標語言 (不顯示翻譯提示)
+        btn.innerHTML = `<div style="font-size:19px; font-weight:900; color:#1E293B;">${tk.top}</div>`;
+        btn.onclick = () => {
+          const expectedNext = item.tokens[builtTokens.length];
+          if (!expectedNext) return;
+          if (tk.top === expectedNext.top) {
+            builtTokens.push(tk);
+            btn.style.opacity = '0.35';
+            btn.disabled = true;
+            if (idx < 2) speakZh(tk.top); else speakEn(tk.top);
+
+            if (builtTokens.length === item.tokens.length) {
+              buildArea.style.borderColor = '#059669';
+              buildArea.style.background = '#ECFDF5';
+              buildArea.innerHTML = renderBilingualBlocksHTML(item.tokens);
+              addStar(2);
+            } else {
+              buildArea.innerHTML = builtTokens.map(x => `<span style="background:#DBEAFE; padding:6px 12px; border-radius:10px; font-weight:900; color:#1E40AF;">${x.top}</span>`).join(' ');
+            }
+          } else {
+            btn.style.background = '#FFE4E6';
+            setTimeout(() => btn.style.background = '#FFFFFF', 350);
+          }
+        };
+        poolDiv.appendChild(btn);
+      });
+
+      card.appendChild(topRow);
+      card.appendChild(promptDiv);
+      card.appendChild(buildArea);
+      card.appendChild(poolDiv);
+      container.appendChild(card);
+    });
+  }
+
+  function showAllSentenceTrans() {
+    gcseSentences4.forEach((item, idx) => {
+      const area = document.getElementById(`trans-build-${idx}`);
+      area.style.borderColor = '#059669';
+      area.style.background = '#ECFDF5';
+      // 以方塊式顯示標準答案：中文題上中下英，英文題上英下中
+      area.innerHTML = renderBilingualBlocksHTML(item.tokens);
+
+      const pool = document.getElementById(`trans-pool-${idx}`);
+      if (pool) {
+        pool.querySelectorAll('button').forEach(b => {
+          b.style.opacity = '0.35';
+          b.disabled = true;
+        });
+      }
+    });
+    speakZh("已經顯示全部四題句子翻譯的方塊標準答案。");
+  }
+
+  // ==================== 第八部分：描紅畫板 ====================
+  const traceVocabList = [
+    ...gcseVocab14.map(v => ({ zh: v.zh, en: v.en, tag: "GCSE 必考字詞" })),
+    { zh: "繁忙", en: "busy", tag: "詞語填充" },
+    { zh: "放鬆", en: "relax", tag: "詞語填充" },
+    { zh: "深刻", en: "deep / profound", tag: "詞語填充" },
+    { zh: "比賽", en: "competition / match", tag: "詞語填充" },
+    { zh: "風格", en: "style", tag: "詞語填充" },
+    { zh: "習慣", en: "habit", tag: "詞語填充" },
+    { zh: "資訊", en: "information", tag: "詞語填充" },
+    { zh: "豐富", en: "rich / abundant", tag: "詞語填充" },
+    { zh: "影響", en: "affect / influence", tag: "詞語填充" },
+    { zh: "交流", en: "exchange / communicate", tag: "詞語填充" },
+    { zh: "孤單", en: "lonely", tag: "詞語填充" },
+    { zh: "安排", en: "arrange", tag: "詞語填充" },
+    { zh: "關心", en: "care about", tag: "詞語填充" },
+    { zh: "能力", en: "ability", tag: "詞語填充" }
+  ];
+
+  let curTraceIdx = 0;
+  let tracePenWidth = 4;
+  let showGhost = true;
+  let isDrawing = false;
+  let tCanvas, tCtx;
+
+  function initTraceButtons() {
+    const box = document.getElementById('trace-word-buttons');
+    box.innerHTML = '';
+    traceVocabList.forEach((item, idx) => {
+      const b = document.createElement('button');
+      b.className = 'btn ' + (idx === curTraceIdx ? 'btn-primary' : 'btn-warning');
+      b.style.padding = '6px 12px';
+      b.style.fontSize = '15px';
+      b.innerText = `${item.zh} (${item.en})`;
+      b.onclick = () => {
+        curTraceIdx = idx;
+        initTraceButtons();
+        drawTraceGhost();
+        speakZh(item.zh);
+      };
+      box.appendChild(b);
+    });
+  }
+
+  function initTraceCanvas() {
+    tCanvas = document.getElementById('trace-canvas');
+    tCtx = tCanvas.getContext('2d');
+    drawTraceGhost();
+
+    tCanvas.onmousedown = (e) => startT(e);
+    tCanvas.onmousemove = (e) => moveT(e);
+    window.onmouseup = () => isDrawing = false;
+
+    tCanvas.ontouchstart = (e) => { e.preventDefault(); startT(e.touches[0]); };
+    tCanvas.ontouchmove = (e) => { e.preventDefault(); moveT(e.touches[0]); };
+    tCanvas.ontouchend = () => isDrawing = false;
+  }
+
+  function drawTraceGhost() {
+    if (!tCtx) return;
+    tCtx.clearRect(0, 0, tCanvas.width, tCanvas.height);
+
+    tCtx.strokeStyle = '#E2E8F0';
+    tCtx.lineWidth = 2;
+    tCtx.beginPath();
+    tCtx.moveTo(0, tCanvas.height / 2);
+    tCtx.lineTo(tCanvas.width, tCanvas.height / 2);
+    tCtx.moveTo(tCanvas.width / 2, 0);
+    tCtx.lineTo(tCanvas.width / 2, tCanvas.height);
+    tCtx.stroke();
+
+    const item = traceVocabList[curTraceIdx];
+    document.getElementById('trace-current-banner').innerHTML = `
+      <div>
+        <span style="background:#F59E0B; color:white; padding:3px 10px; border-radius:99px; font-size:14px; font-weight:800;">${item.tag}</span>
+        <span style="font-size:28px; font-weight:900; color:#B91C1C; margin-left:10px;">${item.zh}</span>
+        <span style="font-size:22px; font-weight:800; color:#1E40AF; margin-left:12px;">${item.en}</span>
+      </div>
+    `;
+
+    if (showGhost) {
+      const fontSize = item.zh.length >= 4 ? 150 : 190;
+      tCtx.font = `bold ${fontSize}px "KaiTi", "STKaiti", "BiauKai", "PingFang HK", sans-serif`;
+      tCtx.fillStyle = '#CBD5E1';
+      tCtx.textAlign = 'center';
+      tCtx.textBaseline = 'middle';
+      tCtx.fillText(item.zh, tCanvas.width / 2, tCanvas.height / 2 + 5);
+    }
+  }
+
+  function getTPos(e) {
+    const r = tCanvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - r.left) * (tCanvas.width / r.width),
+      y: (e.clientY - r.top) * (tCanvas.height / r.height)
+    };
+  }
+
+  function startT(e) {
+    isDrawing = true;
+    const p = getTPos(e);
+    tCtx.beginPath();
+    tCtx.moveTo(p.x, p.y);
+  }
+
+  function moveT(e) {
+    if (!isDrawing) return;
+    const p = getTPos(e);
+    tCtx.lineTo(p.x, p.y);
+    tCtx.strokeStyle = '#DC2626';
+    tCtx.lineWidth = tracePenWidth;
+    tCtx.lineCap = 'round';
+    tCtx.lineJoin = 'round';
+    tCtx.stroke();
+  }
+
+  function setTracePenWidth(w) { tracePenWidth = w; }
+  function toggleTraceGhost() { showGhost = !showGhost; drawTraceGhost(); }
+  function clearTraceCanvas() { drawTraceGhost(); }
+  function finishTraceWord() {
+    addStar(1);
+    const item = traceVocabList[curTraceIdx];
+    speakZh(`寫得好靚呀！${item.zh}`);
+    clearTraceCanvas();
+  }
+  function speakCurrentTrace(mode) {
+    const item = traceVocabList[curTraceIdx];
+    if (mode === 'zh') speakZh(item.zh);
+    else speakEn(item.en);
+  }
+
+  // ==================== 初始化全部關卡 ====================
+  window.onload = () => {
+    loadPreferredVoices();
+    initFillSection();
+    initReorderSection();
+    initMakingSection();
+    initMeasureSection();
+    initGcseVocabSection();
+    initSentenceTransSection();
+    initTraceButtons();
+    initTraceCanvas();
+  };
+</script>
+</body>
+</html>
