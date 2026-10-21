@@ -876,7 +876,7 @@
 </main>
 
 <script>
-  // ==================== 語音系統 (只保留「粵語」及「英文」按鈕) ====================
+  // ==================== 語音系統 (嚴格篩選：溫柔粵語女聲 + 柔和清晰英式女聲，杜絕男聲與AI生硬感) ====================
   let stars = 0;
   let speechRate = 0.75;
   let cantoneseVoice = null;
@@ -897,27 +897,53 @@
     const voices = window.speechSynthesis.getVoices();
     if (!voices.length) return;
 
-    const hkPool = voices.filter(v =>
-      (v.lang.toLowerCase().includes('zh-hk') || v.lang.toLowerCase().includes('yue') || v.name.includes('Hong Kong') || v.name.includes('Cantonese') || v.name.includes('粵')) &&
-      !v.name.toLowerCase().includes('wanlung') &&
-      !v.name.toLowerCase().includes('male')
-    );
-    const hkPriority = ['HiuGaai', 'HiuMaan', 'Natural', 'Premium', 'Enhanced', 'Sin-ji', 'Google'];
+    // 1. 粵語女聲篩選（嚴格過濾男聲）
+    const hkPool = voices.filter(v => {
+      const name = v.name.toLowerCase();
+      const lang = v.lang.toLowerCase();
+      const isZh = lang.includes('zh-hk') || lang.includes('yue') || name.includes('hong kong') || name.includes('cantonese') || name.includes('粵');
+      const isMale = name.includes('wanlung') || name.includes('male') || name.includes('男') || name.includes('danny');
+      return isZh && !isMale;
+    });
+    const hkPriority = ['HiuGaai', 'HiuMaan', 'Natural', 'Premium', 'Enhanced', 'Sin-ji', 'Google', 'Female'];
     for (const kw of hkPriority) {
       const found = hkPool.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
       if (found) { cantoneseVoice = found; break; }
     }
     if (!cantoneseVoice && hkPool.length) cantoneseVoice = hkPool[0];
 
-    const gbPool = voices.filter(v =>
-      v.lang.toLowerCase().includes('en-gb') || v.lang.toLowerCase().includes('en_') || v.name.includes('UK') || v.name.includes('British')
-    );
-    const gbPriority = ['Sonia', 'Libby', 'Natural', 'Serena', 'Martha', 'Female', 'Google UK English Female'];
+    // 2. 英式英語女聲篩選（嚴格排除男聲，確保自然英式口音、音色柔和自然）
+    const gbPool = voices.filter(v => {
+      const name = v.name.toLowerCase();
+      const lang = v.lang.toLowerCase();
+      const isGB = lang.includes('en-gb') || lang === 'en_gb' || name.includes('uk') || name.includes('united kingdom') || name.includes('british');
+      const isMale = name.includes('george') || name.includes('oliver') || name.includes('david') || name.includes('male') || name.includes('ryan') || name.includes('richard') || name.includes('alfie') || name.includes('guy');
+      return isGB && !isMale;
+    });
+
+    const gbPriority = [
+      'Libby', 'Sonia', 'Mia', 'Hazel', 'Stephanie', 'Serena', 'Martha', 
+      'Natural', 'Neural', 'Google UK English Female', 'Female', 'Victoria'
+    ];
     for (const kw of gbPriority) {
       const found = gbPool.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
       if (found) { britishVoice = found; break; }
     }
-    if (!britishVoice && gbPool.length) britishVoice = gbPool[0];
+    if (!britishVoice && gbPool.length) {
+      britishVoice = gbPool[0];
+    }
+
+    // 若系統暫未安裝本地 en-GB 女聲，退而尋找其它自然柔和的英語女聲，但依然堅持排除男聲
+    if (!britishVoice) {
+      const fallbackFemale = voices.filter(v => {
+        const name = v.name.toLowerCase();
+        const lang = v.lang.toLowerCase();
+        const isEn = lang.startsWith('en');
+        const isMale = name.includes('male') || name.includes('david') || name.includes('george') || name.includes('guy') || name.includes('mark');
+        return isEn && !isMale && (name.includes('female') || name.includes('natural') || name.includes('samantha') || name.includes('karen') || name.includes('victoria') || name.includes('zira'));
+      });
+      if (fallbackFemale.length) britishVoice = fallbackFemale[0];
+    }
   }
 
   if ('speechSynthesis' in window) {
@@ -944,12 +970,13 @@
     const u = new SpeechSynthesisUtterance(text);
     if (britishVoice) u.voice = britishVoice;
     u.lang = 'en-GB';
-    u.rate = Math.min(0.95, speechRate + 0.08);
-    u.pitch = 1.03;
+    // 速度微調至 0.76x-0.82x，音調調至 1.06，使英式女聲顯得親切柔和，去除生硬AI機器感
+    u.rate = Math.max(0.72, Math.min(0.85, speechRate + 0.03));
+    u.pitch = 1.06;
     window.speechSynthesis.speak(u);
   }
 
-  // 只生成「🔊 粵語」與「🔊 英文」兩個按鈕
+  // 每個項目僅配置「🔊 粵語」與「🔊 英文」兩個按鈕
   function createAudioButtons(zhText, enText) {
     const wrap = document.createElement('div');
     wrap.className = 'audio-group';
@@ -963,7 +990,7 @@
     const bEn = document.createElement('button');
     bEn.className = 'voice-btn voice-en';
     bEn.innerText = '🔊 英文';
-    bEn.title = 'English Audio';
+    bEn.title = 'British English Female Audio';
     bEn.onclick = (e) => { e.stopPropagation(); speakEn(enText); };
 
     wrap.appendChild(bZh);
