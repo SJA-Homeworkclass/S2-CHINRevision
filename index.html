@@ -876,6 +876,8 @@
 <script>
   let stars = 0;
   let speechRate = 0.78;
+  let cachedCantoneseVoice = null;
+  let currentOnlineAudio = null;
 
   function addStar(n = 1) {
     stars += n;
@@ -887,16 +889,104 @@
     document.getElementById('rate-label').innerText = `${speechRate.toFixed(2)}x`;
   }
 
-  // 純淨版標準粵語朗讀（不強制指定 u.voice 或變調，完全交由裝置原生 zh-HK 引擎處理，杜絕手機誤調用搞笑/笑聲特效音）
-  function speakZh(text) {
+  // 專門尋找香港粵語語音物件（排除怪聲及普通話，直接鎖定粵語）
+  function findCantoneseVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return null;
+
+    // 排除特效聲音
+    const badNames = ['jester', 'hysterical', 'deranged', 'bells', 'boing', 'cellos', 'whisper', 'zarvox', 'bubbles', 'bad news', 'good news'];
+    const clean = voices.filter(v => {
+      const n = (v.name || '').toLowerCase();
+      return !badNames.some(b => n.includes(b));
+    });
+
+    // 1. 優先匹配專用香港粵語女聲（iPhone/iPad 的 Sin-ji、Windows 的 HiuMaan/HiuGaai、Google 粵語）
+    const p1 = clean.find(v => {
+      const l = (v.lang || '').toLowerCase().replace('_', '-');
+      const n = (v.name || '').toLowerCase();
+      const isHK = l === 'zh-hk' || l === 'yue-hk' || l === 'zh-yue' || n.includes('hong kong') || n.includes('cantonese') || n.includes('粵語') || n.includes('廣東話');
+      const isGood = n.includes('sin-ji') || n.includes('hiumaan') || n.includes('hiugaai') || n.includes('tracy') || n.includes('natural');
+      return isHK && isGood;
+    });
+    if (p1) return p1;
+
+    // 2. 次選任意香港粵語 (zh-HK / yue-HK)
+    const p2 = clean.find(v => {
+      const l = (v.lang || '').toLowerCase().replace('_', '-');
+      const n = (v.name || '').toLowerCase();
+      return l === 'zh-hk' || l === 'yue-hk' || l === 'zh-yue' || n.includes('hong kong') || n.includes('cantonese') || n.includes('粵語') || n.includes('廣東話');
+    });
+    if (p2) return p2;
+
+    return null;
+  }
+
+  function initVoices() {
     if (!('speechSynthesis' in window)) return;
+    cachedCantoneseVoice = findCantoneseVoice();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        cachedCantoneseVoice = findCantoneseVoice();
+      };
+    }
+  }
+
+  // 雲端粵語發音備援：外籍學生手機若未下載粵語包或系統語言是英文而無法啟動 Web Speech 時自動調用
+  function playOnlineCantonese(cleanText) {
+    if (currentOnlineAudio) {
+      currentOnlineAudio.pause();
+      currentOnlineAudio = null;
+    }
+    const url = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-HK&q=' + encodeURIComponent(cleanText);
+    currentOnlineAudio = new Audio(url);
+    currentOnlineAudio.playbackRate = speechRate || 0.78;
+    currentOnlineAudio.play().catch(e => {
+      console.warn("Audio playback notice:", e);
+    });
+  }
+
+  // 統一粵語發音主函數：不隨手機系統語言改變，統一鎖定純粵語
+  function speakZh(text) {
+    const clean = text.replace(/＿＿+/g, '，空格，').replace(/___/g, '').trim();
+    if (!clean) return;
+
+    if (currentOnlineAudio) {
+      currentOnlineAudio.pause();
+      currentOnlineAudio = null;
+    }
+
+    if (!('speechSynthesis' in window)) {
+      playOnlineCantonese(clean);
+      return;
+    }
+
     window.speechSynthesis.cancel();
-    const clean = text.replace(/＿＿+/g, '，空格，').replace(/___/g, '');
-    const u = new SpeechSynthesisUtterance(clean);
-    u.lang = 'zh-HK';
-    u.rate = speechRate;
-    u.pitch = 1.0;
-    window.speechSynthesis.speak(u);
+
+    if (!cachedCantoneseVoice) {
+      cachedCantoneseVoice = findCantoneseVoice();
+    }
+
+    // 若系統中找到粵語語音物件，強制指派 voice 物件，徹底杜絕 iOS 隨系統語言退回普通話或英文
+    if (cachedCantoneseVoice) {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.voice = cachedCantoneseVoice;
+      u.lang = cachedCantoneseVoice.lang || 'zh-HK';
+      u.rate = speechRate;
+      u.pitch = 1.0;
+
+      let started = false;
+      u.onstart = () => { started = true; };
+      u.onerror = () => {
+        if (!started) playOnlineCantonese(clean);
+      };
+
+      window.speechSynthesis.speak(u);
+    } else {
+      // 若手機系統是英文且完全未下載粵語語音包，無縫調用雲端純粵語發音
+      playOnlineCantonese(clean);
+    }
   }
 
   function createAudioButtons(zhText) {
@@ -1657,7 +1747,7 @@
       feedbackBox.style.padding = '10px 14px';
       feedbackBox.style.borderRadius = '12px';
       feedbackBox.style.fontWeight = '800';
-      feedbackBox.style.fontSize = '16px';
+      feedbackBox.fontSize = '16px';
 
       let answered = false;
 
@@ -2212,6 +2302,7 @@
   }
 
   window.onload = () => {
+    initVoices();
     initFillSection();
     initReorderSection();
     initMakingSection();
