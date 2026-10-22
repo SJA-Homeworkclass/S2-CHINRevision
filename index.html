@@ -235,20 +235,19 @@
 
   .voice-btn {
     border-radius: 10px;
-    padding: 4px 10px;
-    font-size: 13px;
+    padding: 5px 12px;
+    font-size: 14px;
     font-weight: 800;
     cursor: pointer;
     border: 2px solid transparent;
     display: inline-flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     transition: all 0.15s;
   }
 
   .voice-btn:hover { transform: scale(1.06); }
   .voice-zh { background: #FEF3C7; color: #92400E; border-color: #F59E0B; }
-  .voice-en { background: #E0F2FE; color: #1E40AF; border-color: #38BDF8; }
 
   /* 關卡 1：詞語填充 */
   .word-bank-sticky {
@@ -674,9 +673,9 @@
 
   <div class="header-controls">
     <div class="voice-pill">
-      <span>👩‍🏫 粵語/英語女聲語速：</span>
-      <input type="range" id="rate-slider" min="0.55" max="0.95" step="0.05" value="0.75" oninput="updateRate(this.value)">
-      <span id="rate-label">0.75x</span>
+      <span>🔊 粵語朗讀語速：</span>
+      <input type="range" id="rate-slider" min="0.55" max="0.95" step="0.05" value="0.78" oninput="updateRate(this.value)">
+      <span id="rate-label">0.78x</span>
     </div>
     <div class="star-badge">
       <span>⭐ Stars:</span>
@@ -732,7 +731,7 @@
 
     <div class="word-bank-sticky">
       <div class="wb-header">
-        <span>👇 詞語庫 Word Bank（共 20 個詞語，點擊空格後再點擊詞語填入；點擊按鈕可聽粵語或英文發音）：</span>
+        <span>👇 詞語庫 Word Bank（共 20 個詞語，點擊空格後再點擊詞語填入；點擊按鈕可聽粵語發音）：</span>
       </div>
       <div id="wb-grid" class="wb-grid"></div>
     </div>
@@ -849,11 +848,10 @@
     <div class="panel-header">
       <div class="panel-title-box">
         <h2>✍️ 八、重點字詞聽音描紅畫板（幼筆描紅 ＋ 大字體）</h2>
-        <p>Part 8: Audio Tracing Board — Listen to Cantonese or English and trace the characters with a fine brush.</p>
+        <p>Part 8: Audio Tracing Board — Listen to Cantonese and trace the characters with a fine brush.</p>
       </div>
       <div class="audio-group">
-        <button class="btn voice-zh" onclick="speakCurrentTrace('zh')">🔊 粵語</button>
-        <button class="btn voice-en" onclick="speakCurrentTrace('en')">🔊 英文</button>
+        <button class="btn voice-zh" onclick="speakCurrentTrace()">🔊 粵語朗讀</button>
       </div>
     </div>
 
@@ -877,7 +875,7 @@
 
 <script>
   let stars = 0;
-  let speechRate = 0.75;
+  let speechRate = 0.78;
 
   function addStar(n = 1) {
     stars += n;
@@ -889,117 +887,29 @@
     document.getElementById('rate-label').innerText = `${speechRate.toFixed(2)}x`;
   }
 
-  // 排除所有男聲及系統奇怪特效音色（如 Whisper, Zarvox, Bubbles, Trinoids, Boing 等）
-  const EXCLUDE_VOICE_KEYWORDS = [
-    'david', 'george', 'richard', 'ryan', 'oliver', 'alfie', 'guy', 'danny',
-    'wanlung', 'kangkang', 'yunyang', 'yunxi', 'brian', 'mark', 'james', 'thomas',
-    'charles', 'paul', 'john', 'shaun', 'male', 'man', 'boy', 'alex', 'fred',
-    'daniel', 'arthur', 'albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles',
-    'cellos', 'deranged', 'good news', 'hysterical', 'junior', 'organ', 'ralph',
-    'superstar', 'trinoids', 'whisper', 'wobble', 'zarvox', 'eddy', 'reed', 'rocko', 'grandpa'
-  ];
-
-  function isCleanFemaleVoice(voice) {
-    if (!voice) return false;
-    const name = voice.name.toLowerCase();
-    for (const kw of EXCLUDE_VOICE_KEYWORDS) {
-      if (name.includes(kw)) return false;
-    }
-    return true;
-  }
-
-  function getBestDefaultVoice(langType) {
-    if (!('speechSynthesis' in window)) return null;
-    const all = window.speechSynthesis.getVoices();
-    if (!all || !all.length) return null;
-
-    if (langType === 'zh') {
-      const zhPool = all.filter(v => {
-        const l = v.lang.toLowerCase();
-        const n = v.name.toLowerCase();
-        return (l.includes('zh') || l.includes('yue') || n.includes('cantonese') || n.includes('chinese')) && isCleanFemaleVoice(v);
-      });
-      return (
-        zhPool.find(v => v.name.includes('HiuMaan') || v.name.includes('HiuGaai')) ||
-        zhPool.find(v => v.name.includes('Sin-ji') || v.name.includes('Tracy')) ||
-        zhPool.find(v => (v.lang.toLowerCase().includes('hk') || v.lang.toLowerCase().includes('yue')) && v.name.includes('Google')) ||
-        zhPool.find(v => v.lang.toLowerCase().includes('hk') || v.lang.toLowerCase().includes('yue')) ||
-        zhPool[0] ||
-        null
-      );
-    } else {
-      const enPool = all.filter(v => v.lang.toLowerCase().startsWith('en') && isCleanFemaleVoice(v));
-      return (
-        enPool.find(v => v.name.includes('Sonia') || v.name.includes('Libby') || v.name.includes('Hazel')) ||
-        enPool.find(v => v.name.includes('Google UK English Female')) ||
-        enPool.find(v => v.name.includes('Serena') || v.name.includes('Martha') || v.name.includes('Kate')) ||
-        enPool.find(v => v.lang.toLowerCase().includes('gb') || v.lang.toLowerCase().includes('uk')) ||
-        enPool.find(v => v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Zira') || v.name.includes('Samantha')) ||
-        enPool[0] ||
-        null
-      );
-    }
-  }
-
+  // 純淨版標準粵語朗讀（不強制指定 u.voice 或變調，完全交由裝置原生 zh-HK 引擎處理，杜絕手機誤調用搞笑/笑聲特效音）
   function speakZh(text) {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const clean = text.replace(/＿＿+/g, '，空格，').replace(/\_/g, '');
+    const clean = text.replace(/＿＿+/g, '，空格，').replace(/___/g, '');
     const u = new SpeechSynthesisUtterance(clean);
-
-    const voice = getBestDefaultVoice('zh');
-    if (voice) {
-      u.voice = voice;
-      u.lang = voice.lang;
-    } else {
-      u.lang = 'zh-HK';
-    }
+    u.lang = 'zh-HK';
     u.rate = speechRate;
-    u.pitch = 1.1;
+    u.pitch = 1.0;
     window.speechSynthesis.speak(u);
   }
 
-  function speakEn(text) {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-
-    const voice = getBestDefaultVoice('en');
-    if (voice) {
-      u.voice = voice;
-      u.lang = voice.lang;
-    } else {
-      u.lang = 'en-GB';
-    }
-    u.rate = Math.max(0.72, Math.min(0.85, speechRate + 0.03));
-    u.pitch = 1.08;
-    window.speechSynthesis.speak(u);
-  }
-
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = () => {
-      window.speechSynthesis.getVoices();
-    };
-  }
-
-  function createAudioButtons(zhText, enText) {
+  function createAudioButtons(zhText) {
     const wrap = document.createElement('div');
     wrap.className = 'audio-group';
 
     const bZh = document.createElement('button');
     bZh.className = 'voice-btn voice-zh';
     bZh.innerText = '🔊 粵語';
-    bZh.title = '粵語女聲朗讀';
+    bZh.title = '粵語朗讀';
     bZh.onclick = (e) => { e.stopPropagation(); speakZh(zhText); };
 
-    const bEn = document.createElement('button');
-    bEn.className = 'voice-btn voice-en';
-    bEn.innerText = '🔊 英文';
-    bEn.title = 'British English Female Audio';
-    bEn.onclick = (e) => { e.stopPropagation(); speakEn(enText); };
-
     wrap.appendChild(bZh);
-    wrap.appendChild(bEn);
     return wrap;
   }
 
@@ -1154,7 +1064,7 @@
       textDiv.className = 'wb-card-text';
       textDiv.innerHTML = `<span class="wb-zh">${item.zh}</span><span class="wb-en">${item.en}</span>`;
 
-      const audioBtns = createAudioButtons(item.zh, item.en);
+      const audioBtns = createAudioButtons(item.zh);
 
       card.appendChild(textDiv);
       card.appendChild(audioBtns);
@@ -1188,7 +1098,7 @@
         }
       });
 
-      const audioWrap = createAudioButtons(q.fullZh, q.fullEn);
+      const audioWrap = createAudioButtons(q.fullZh);
       topRow.appendChild(zhLine);
       topRow.appendChild(audioWrap);
 
@@ -1323,7 +1233,7 @@
       left.appendChild(badge);
       left.appendChild(textWrap);
 
-      const audios = createAudioButtons(`${item.letter}，${item.zh}`, `${item.letter}. ${item.en}`);
+      const audios = createAudioButtons(`${item.letter}，${item.zh}`);
 
       card.appendChild(left);
       card.appendChild(audios);
@@ -1481,7 +1391,7 @@
           <div style="font-size:15px; color:#475569;">${task.promptEn}</div>
         </div>
       `;
-      header.appendChild(createAudioButtons(task.sampleZh, task.sampleEn));
+      header.appendChild(createAudioButtons(task.sampleZh));
 
       const sampleBox = document.createElement('div');
       sampleBox.style.background = '#FFFBEB';
@@ -1731,7 +1641,7 @@
       title.innerText = `${q.no}. ${q.zh}`;
 
       top.appendChild(title);
-      top.appendChild(createAudioButtons(q.fullZh, q.en));
+      top.appendChild(createAudioButtons(q.fullZh));
 
       const enSub = document.createElement('div');
       enSub.className = 'fill-en-line';
@@ -1761,7 +1671,7 @@
             <div style="font-size:12px; color:#475569;">${opt.en}</div>
           </div>
         `;
-        const miniAudio = createAudioButtons(`${opt.letter}，${opt.zh}`, `${opt.letter}, ${opt.en}`);
+        const miniAudio = createAudioButtons(`${opt.letter}，${opt.zh}`);
         btn.appendChild(miniAudio);
 
         btn.onclick = () => {
@@ -1815,7 +1725,7 @@
       chip.className = 'wb-card';
       chip.dataset.ans = m.ans;
       chip.innerHTML = `<div class="wb-card-text"><span class="wb-zh">${m.ans}</span><span class="wb-en">${m.ansEn}</span></div>`;
-      chip.appendChild(createAudioButtons(m.ans, m.ansEn));
+      chip.appendChild(createAudioButtons(m.ans));
       chip.onclick = () => {
         speakZh(m.ans);
         if (!activeMeasureSlot) {
@@ -1866,7 +1776,7 @@
       line.appendChild(document.createTextNode(` ${m.after}`));
 
       top.appendChild(line);
-      top.appendChild(createAudioButtons(m.fullZh, m.fullEn));
+      top.appendChild(createAudioButtons(m.fullZh));
 
       const enLine = document.createElement('div');
       enLine.className = 'fill-en-line';
@@ -1932,7 +1842,7 @@
         <div class="gcse-zh">${v.zh}</div>
         <div class="gcse-en">${v.en}</div>
       `;
-      card.appendChild(createAudioButtons(v.zh, v.en));
+      card.appendChild(createAudioButtons(v.zh));
       grid.appendChild(card);
     });
 
@@ -1975,15 +1885,9 @@
       const btn = document.createElement('div');
       btn.className = 'mc-btn';
       btn.innerHTML = `<span style="font-size:20px; font-weight:800; color:#1E40AF;">${item.en}</span>`;
-      const bEn = document.createElement('button');
-      bEn.className = 'voice-btn voice-en';
-      bEn.innerText = '🔊 英文';
-      bEn.onclick = (e) => { e.stopPropagation(); speakEn(item.en); };
-      btn.appendChild(bEn);
 
       btn.onclick = () => {
         if (btn.classList.contains('correct')) return;
-        speakEn(item.en);
         document.querySelectorAll('#gcse-match-right .mc-btn').forEach(x => x.style.borderColor = '#CBD5E1');
         btn.style.borderColor = '#3B82F6';
         gcseRightSel = { el: btn, item };
@@ -1998,6 +1902,7 @@
     if (gcseLeftSel.item.id === gcseRightSel.item.id) {
       gcseLeftSel.el.classList.add('correct');
       gcseRightSel.el.classList.add('correct');
+      speakZh(gcseLeftSel.item.zh);
       addStar(1);
       gcseLeftSel = null;
       gcseRightSel = null;
@@ -2102,7 +2007,7 @@
       badge.innerText = item.direction;
 
       topRow.appendChild(badge);
-      topRow.appendChild(createAudioButtons(item.zh, item.en));
+      topRow.appendChild(createAudioButtons(item.zh));
 
       const promptDiv = document.createElement('div');
       promptDiv.className = 'trans-prompt';
@@ -2131,12 +2036,13 @@
             builtTokens.push(tk);
             btn.style.opacity = '0.35';
             btn.disabled = true;
-            if (idx < 2) speakZh(tk.top); else speakEn(tk.top);
+            if (idx < 2) speakZh(tk.top); else speakZh(tk.sub);
 
             if (builtTokens.length === item.tokens.length) {
               buildArea.style.borderColor = '#059669';
               buildArea.style.background = '#ECFDF5';
               buildArea.innerHTML = renderBilingualBlocksHTML(item.tokens);
+              speakZh(item.zh);
               addStar(2);
             } else {
               buildArea.innerHTML = builtTokens.map(x => `<span style="background:#DBEAFE; padding:6px 12px; border-radius:10px; font-weight:900; color:#1E40AF;">${x.top}</span>`).join(' ');
@@ -2300,16 +2206,12 @@
     speakZh(`寫得好靚呀！${item.zh}`);
     clearTraceCanvas();
   }
-  function speakCurrentTrace(mode) {
+  function speakCurrentTrace() {
     const item = traceVocabList[curTraceIdx];
-    if (mode === 'zh') speakZh(item.zh);
-    else speakEn(item.en);
+    speakZh(item.zh);
   }
 
   window.onload = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-    }
     initFillSection();
     initReorderSection();
     initMakingSection();
