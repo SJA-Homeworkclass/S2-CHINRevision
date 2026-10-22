@@ -71,7 +71,7 @@
   .header-controls {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
@@ -79,7 +79,7 @@
     background: rgba(255,255,255,0.95);
     padding: 6px 14px;
     border-radius: 999px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -88,7 +88,7 @@
   }
 
   .voice-pill input[type="range"] {
-    width: 85px;
+    width: 80px;
     accent-color: var(--primary-blue);
     cursor: pointer;
   }
@@ -676,8 +676,11 @@
     <div class="voice-pill">
       <span>👩‍🏫 語速 Speed：</span>
       <input type="range" id="rate-slider" min="0.55" max="0.95" step="0.05" value="0.75" oninput="updateRate(this.value)">
-      <span id="rate-label">0.75x (慢速清晰 Slow)</span>
+      <span id="rate-label">0.75x</span>
     </div>
+    <button class="btn btn-purple" style="font-size:13px; padding:6px 12px;" onclick="testFemaleVoices()">
+      🔊 測試女聲發音
+    </button>
     <div class="star-badge">
       <span>⭐ Stars:</span>
       <span id="star-count">0</span>
@@ -876,11 +879,9 @@
 </main>
 
 <script>
-  // ==================== 語音系統 (嚴格篩選：溫柔粵語女聲 + 柔和清晰英式女聲，杜絕男聲與AI生硬感) ====================
+  // ==================== 嚴格純女聲過濾與鎖定核心 ====================
   let stars = 0;
   let speechRate = 0.75;
-  let cantoneseVoice = null;
-  let britishVoice = null;
 
   function addStar(n = 1) {
     stars += n;
@@ -892,91 +893,138 @@
     document.getElementById('rate-label').innerText = `${speechRate.toFixed(2)}x`;
   }
 
-  function loadPreferredVoices() {
-    if (!('speechSynthesis' in window)) return;
-    const voices = window.speechSynthesis.getVoices();
-    if (!voices.length) return;
+  // 嚴格男聲黑名單（絕不使用任何男聲音色）
+  const MALE_NAMES = [
+    'male', 'man', 'boy', 'david', 'george', 'richard', 'ryan', 'oliver',
+    'alfie', 'guy', 'danny', 'wanlung', 'kangkang', 'yunyang', 'yunxi',
+    'brian', 'mark', 'james', 'thomas', 'charles', 'paul', 'john', 'shaun'
+  ];
 
-    // 1. 粵語女聲篩選（嚴格過濾男聲）
-    const hkPool = voices.filter(v => {
-      const name = v.name.toLowerCase();
-      const lang = v.lang.toLowerCase();
-      const isZh = lang.includes('zh-hk') || lang.includes('yue') || name.includes('hong kong') || name.includes('cantonese') || name.includes('粵');
-      const isMale = name.includes('wanlung') || name.includes('male') || name.includes('男') || name.includes('danny');
-      return isZh && !isMale;
-    });
-    const hkPriority = ['HiuGaai', 'HiuMaan', 'Natural', 'Premium', 'Enhanced', 'Sin-ji', 'Google', 'Female'];
-    for (const kw of hkPriority) {
-      const found = hkPool.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
-      if (found) { cantoneseVoice = found; break; }
+  function isStrictlyFemale(voice) {
+    if (!voice) return false;
+    const name = voice.name.toLowerCase();
+    for (const m of MALE_NAMES) {
+      if (name.includes(m)) return false;
     }
-    if (!cantoneseVoice && hkPool.length) cantoneseVoice = hkPool[0];
-
-    // 2. 英式英語女聲篩選（嚴格排除男聲，確保自然英式口音、音色柔和自然）
-    const gbPool = voices.filter(v => {
-      const name = v.name.toLowerCase();
-      const lang = v.lang.toLowerCase();
-      const isGB = lang.includes('en-gb') || lang === 'en_gb' || name.includes('uk') || name.includes('united kingdom') || name.includes('british');
-      const isMale = name.includes('george') || name.includes('oliver') || name.includes('david') || name.includes('male') || name.includes('ryan') || name.includes('richard') || name.includes('alfie') || name.includes('guy');
-      return isGB && !isMale;
-    });
-
-    const gbPriority = [
-      'Libby', 'Sonia', 'Mia', 'Hazel', 'Stephanie', 'Serena', 'Martha', 
-      'Natural', 'Neural', 'Google UK English Female', 'Female', 'Victoria'
-    ];
-    for (const kw of gbPriority) {
-      const found = gbPool.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
-      if (found) { britishVoice = found; break; }
-    }
-    if (!britishVoice && gbPool.length) {
-      britishVoice = gbPool[0];
-    }
-
-    // 若系統暫未安裝本地 en-GB 女聲，退而尋找其它自然柔和的英語女聲，但依然堅持排除男聲
-    if (!britishVoice) {
-      const fallbackFemale = voices.filter(v => {
-        const name = v.name.toLowerCase();
-        const lang = v.lang.toLowerCase();
-        const isEn = lang.startsWith('en');
-        const isMale = name.includes('male') || name.includes('david') || name.includes('george') || name.includes('guy') || name.includes('mark');
-        return isEn && !isMale && (name.includes('female') || name.includes('natural') || name.includes('samantha') || name.includes('karen') || name.includes('victoria') || name.includes('zira'));
-      });
-      if (fallbackFemale.length) britishVoice = fallbackFemale[0];
-    }
+    return true;
   }
 
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = loadPreferredVoices;
+  function getBestCantoneseFemaleVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+
+    // 1. 香港粵語女聲優先名單
+    const hkFemaleNames = ['hiumaan', 'hiugaai', 'tracy', 'sin-ji', 'sinji', 'cantonese female', '粵語'];
+    for (const kw of hkFemaleNames) {
+      const match = voices.find(v => {
+        const lang = v.lang.toLowerCase();
+        const name = v.name.toLowerCase();
+        const isZh = lang.includes('zh-hk') || lang.includes('yue') || name.includes('hong kong');
+        return isZh && isStrictlyFemale(v) && name.includes(kw);
+      });
+      if (match) return match;
+    }
+
+    // 2. 任何符合 zh-HK 且非男聲的語音
+    const anyHkFemale = voices.find(v => {
+      const lang = v.lang.toLowerCase();
+      return (lang.includes('zh-hk') || lang.includes('yue')) && isStrictlyFemale(v);
+    });
+    if (anyHkFemale) return anyHkFemale;
+
+    // 3. 備援：若客戶電腦未安裝粵語包，使用中文/華語柔和女聲（絕不掉入英文男聲）
+    const zhFemaleNames = ['xiaoxiao', 'hanhan', 'yaoyao', 'huihui', 'meijia', 'tingting', 'google 普通话', 'google 國語'];
+    for (const kw of zhFemaleNames) {
+      const match = voices.find(v => {
+        const lang = v.lang.toLowerCase();
+        const name = v.name.toLowerCase();
+        return lang.startsWith('zh') && isStrictlyFemale(v) && name.includes(kw);
+      });
+      if (match) return match;
+    }
+
+    const anyZhFemale = voices.find(v => v.lang.toLowerCase().startsWith('zh') && isStrictlyFemale(v));
+    return anyZhFemale || null;
+  }
+
+  function getBestBritishFemaleVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+
+    // 1. 英式女聲優先名單
+    const ukFemaleNames = ['libby', 'sonia', 'hazel', 'serena', 'martha', 'stephanie', 'mia', 'google uk english female', 'uk female'];
+    for (const kw of ukFemaleNames) {
+      const match = voices.find(v => {
+        const lang = v.lang.toLowerCase();
+        const name = v.name.toLowerCase();
+        const isUK = lang.includes('en-gb') || lang === 'en_gb' || name.includes('united kingdom') || name.includes('uk');
+        return isUK && isStrictlyFemale(v) && name.includes(kw);
+      });
+      if (match) return match;
+    }
+
+    // 2. 任何符合 en-GB 的女聲
+    const anyUkFemale = voices.find(v => {
+      const lang = v.lang.toLowerCase();
+      return (lang.includes('en-gb') || lang === 'en_gb') && isStrictlyFemale(v);
+    });
+    if (anyUkFemale) return anyUkFemale;
+
+    // 3. 備援：若系統無 UK 女聲，採用全系統保證安裝的清晰英語女聲（如 Windows 必備的 Jenny/Aria/Zira 或 Mac 的 Samantha/Victoria）
+    const enGeneralFemale = ['jenny', 'aria', 'zira', 'samantha', 'victoria', 'karen', 'female', 'natural'];
+    for (const kw of enGeneralFemale) {
+      const match = voices.find(v => {
+        const lang = v.lang.toLowerCase();
+        const name = v.name.toLowerCase();
+        return lang.startsWith('en') && isStrictlyFemale(v) && name.includes(kw);
+      });
+      if (match) return match;
+    }
+
+    const anyEnFemale = voices.find(v => v.lang.toLowerCase().startsWith('en') && isStrictlyFemale(v));
+    return anyEnFemale || null;
   }
 
   function speakZh(text) {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    loadPreferredVoices();
     const clean = text.replace(/＿＿+/g, '，空格，').replace(/_/g, '');
     const u = new SpeechSynthesisUtterance(clean);
-    if (cantoneseVoice) u.voice = cantoneseVoice;
+    
+    const femaleVoice = getBestCantoneseFemaleVoice();
+    if (femaleVoice) {
+      u.voice = femaleVoice;
+    }
     u.lang = 'zh-HK';
     u.rate = speechRate;
-    u.pitch = 1.05;
+    u.pitch = 1.15; // 提高音調保證女性音色柔和自然
     window.speechSynthesis.speak(u);
   }
 
   function speakEn(text) {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    loadPreferredVoices();
     const u = new SpeechSynthesisUtterance(text);
-    if (britishVoice) u.voice = britishVoice;
+    
+    const femaleVoice = getBestBritishFemaleVoice();
+    if (femaleVoice) {
+      u.voice = femaleVoice;
+    }
     u.lang = 'en-GB';
-    // 速度微調至 0.76x-0.82x，音調調至 1.06，使英式女聲顯得親切柔和，去除生硬AI機器感
     u.rate = Math.max(0.72, Math.min(0.85, speechRate + 0.03));
-    u.pitch = 1.06;
+    u.pitch = 1.14; // 柔和女聲音調
     window.speechSynthesis.speak(u);
   }
 
-  // 每個項目僅配置「🔊 粵語」與「🔊 英文」兩個按鈕
+  function testFemaleVoices() {
+    speakZh("你好！我是中文女聲老師。");
+    setTimeout(() => {
+      speakEn("Hello, I am your British English female teacher.");
+    }, 2200);
+  }
+
   function createAudioButtons(zhText, enText) {
     const wrap = document.createElement('div');
     wrap.className = 'audio-group';
@@ -1266,7 +1314,7 @@
     speakZh("已經顯示全部標準答案。");
   }
 
-  // ==================== 第二部分：排句成段 (不預先顯示標準答案，附中英解析) ====================
+  // ==================== 第二部分：排句成段 ====================
   const reorderItems = [
     {
       letter: "A",
@@ -1408,7 +1456,7 @@
     `;
   }
 
-  // ==================== 第三 & 四部分：句式造句 及 詞語造句 (簡單易寫中文字，無英文字母，≥15字) ====================
+  // ==================== 第三 & 四部分：句式造句 及 詞語造句 ====================
   const makingTasks = [
     {
       type: "三、句式造句 (1)",
@@ -1584,7 +1632,7 @@
     });
   }
 
-  // ==================== 第五部分：量詞運用（每題只可選一個答案並判斷對錯） ====================
+  // ==================== 第五部分：量詞運用 ====================
   const measureMCs = [
     {
       no: 1,
@@ -1764,7 +1812,6 @@
         btn.appendChild(miniAudio);
 
         btn.onclick = () => {
-          // 只能選擇一個答案：一旦作答即鎖定該題所有選項
           if (answered) return;
           answered = true;
 
@@ -1900,7 +1947,7 @@
     speakZh("已經顯示量詞運用全部標準答案。");
   }
 
-  // ==================== 第六部分：GCSE 字詞翻譯 (14個中英生詞) ====================
+  // ==================== 第六部分：GCSE 字詞翻譯 ====================
   const gcseVocab14 = [
     { zh: "將來", en: "future" },
     { zh: "星期", en: "week" },
@@ -2019,7 +2066,7 @@
     }
   }
 
-  // ==================== 第七部分：GCSE 句子翻譯 (隱藏題目下標準答案、選項只顯示單語、顯示標準答案時呈上下雙語方塊) ====================
+  // ==================== 第七部分：GCSE 句子翻譯 ====================
   const gcseSentences4 = [
     {
       direction: "請將以下句子翻譯成中文 (Translate into Chinese) — Q1",
@@ -2126,7 +2173,6 @@
       shuffled.forEach(tk => {
         const btn = document.createElement('button');
         btn.className = 'chunk-btn';
-        // 選項方塊一開始只顯示目標語言 (不顯示翻譯提示)
         btn.innerHTML = `<div style="font-size:19px; font-weight:900; color:#1E293B;">${tk.top}</div>`;
         btn.onclick = () => {
           const expectedNext = item.tokens[builtTokens.length];
@@ -2166,7 +2212,6 @@
       const area = document.getElementById(`trans-build-${idx}`);
       area.style.borderColor = '#059669';
       area.style.background = '#ECFDF5';
-      // 以方塊式顯示標準答案：中文題上中下英，英文題上英下中
       area.innerHTML = renderBilingualBlocksHTML(item.tokens);
 
       const pool = document.getElementById(`trans-pool-${idx}`);
@@ -2313,7 +2358,6 @@
 
   // ==================== 初始化全部關卡 ====================
   window.onload = () => {
-    loadPreferredVoices();
     initFillSection();
     initReorderSection();
     initMakingSection();
