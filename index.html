@@ -93,29 +93,6 @@
     cursor: pointer;
   }
 
-  .voice-selector-box {
-    background: rgba(255,255,255,0.95);
-    padding: 6px 12px;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  }
-
-  .voice-selector-box select {
-    font-size: 13px;
-    font-weight: 700;
-    padding: 3px 6px;
-    border-radius: 8px;
-    border: 1px solid #CBD5E1;
-    background: #FFFFFF;
-    max-width: 170px;
-    cursor: pointer;
-  }
-
   .star-badge {
     background: #FFFFFF;
     padding: 8px 18px;
@@ -696,22 +673,11 @@
   </div>
 
   <div class="header-controls">
-    <div class="voice-selector-box">
-      <span>👩 粵語女聲：</span>
-      <select id="select-zh-voice" onchange="onUserSelectVoice()"></select>
-    </div>
-    <div class="voice-selector-box">
-      <span>👩 英文女聲：</span>
-      <select id="select-en-voice" onchange="onUserSelectVoice()"></select>
-    </div>
     <div class="voice-pill">
-      <span>語速：</span>
+      <span>👩‍🏫 粵語/英語女聲語速：</span>
       <input type="range" id="rate-slider" min="0.55" max="0.95" step="0.05" value="0.75" oninput="updateRate(this.value)">
       <span id="rate-label">0.75x</span>
     </div>
-    <button class="btn btn-purple" style="font-size:13px; padding:6px 12px;" onclick="testFemaleVoices()">
-      🔊 測試發音
-    </button>
     <div class="star-badge">
       <span>⭐ Stars:</span>
       <span id="star-count">0</span>
@@ -912,8 +878,6 @@
 <script>
   let stars = 0;
   let speechRate = 0.75;
-  let chosenZhVoiceURI = null;
-  let chosenEnVoiceURI = null;
 
   function addStar(n = 1) {
     stars += n;
@@ -925,135 +889,65 @@
     document.getElementById('rate-label').innerText = `${speechRate.toFixed(2)}x`;
   }
 
-  const MALE_KEYWORDS = [
+  // 排除所有男聲及系統奇怪特效音色（如 Whisper, Zarvox, Bubbles, Trinoids, Boing 等）
+  const EXCLUDE_VOICE_KEYWORDS = [
     'david', 'george', 'richard', 'ryan', 'oliver', 'alfie', 'guy', 'danny',
     'wanlung', 'kangkang', 'yunyang', 'yunxi', 'brian', 'mark', 'james', 'thomas',
-    'charles', 'paul', 'john', 'shaun', 'male', 'man', 'boy', 'alex', 'fred'
+    'charles', 'paul', 'john', 'shaun', 'male', 'man', 'boy', 'alex', 'fred',
+    'daniel', 'arthur', 'albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles',
+    'cellos', 'deranged', 'good news', 'hysterical', 'junior', 'organ', 'ralph',
+    'superstar', 'trinoids', 'whisper', 'wobble', 'zarvox', 'eddy', 'reed', 'rocko', 'grandpa'
   ];
 
-  function isStrictlyFemale(voice) {
+  function isCleanFemaleVoice(voice) {
     if (!voice) return false;
     const name = voice.name.toLowerCase();
-    for (const kw of MALE_KEYWORDS) {
+    for (const kw of EXCLUDE_VOICE_KEYWORDS) {
       if (name.includes(kw)) return false;
     }
     return true;
   }
 
-  function populateVoiceSelectors() {
-    if (!('speechSynthesis' in window)) return;
-    const all = window.speechSynthesis.getVoices();
-    if (!all || !all.length) return;
-
-    const selZh = document.getElementById('select-zh-voice');
-    const selEn = document.getElementById('select-en-voice');
-    if (!selZh || !selEn) return;
-
-    const zhList = all.filter(v => {
-      const l = v.lang.toLowerCase();
-      const n = v.name.toLowerCase();
-      const isChinese = l.includes('zh') || l.includes('yue') || n.includes('chinese') || n.includes('cantonese');
-      return isChinese && isStrictlyFemale(v);
-    });
-
-    const enList = all.filter(v => {
-      const l = v.lang.toLowerCase();
-      return l.startsWith('en') && isStrictlyFemale(v);
-    });
-
-    selZh.innerHTML = '';
-    if (zhList.length) {
-      zhList.forEach(v => {
-        const opt = document.createElement('option');
-        opt.value = v.voiceURI || v.name;
-        opt.textContent = `${v.name} (${v.lang})`;
-        selZh.appendChild(opt);
-      });
-      const prefZh = zhList.find(v => {
-        const l = v.lang.toLowerCase();
-        const n = v.name.toLowerCase();
-        return (l.includes('hk') || l.includes('yue') || n.includes('hong')) &&
-               (n.includes('hiumaan') || n.includes('hiugaai') || n.includes('sin-ji') || n.includes('tracy') || n.includes('female'));
-      }) || zhList.find(v => v.lang.toLowerCase().includes('hk')) || zhList[0];
-      if (!chosenZhVoiceURI) {
-        chosenZhVoiceURI = prefZh.voiceURI || prefZh.name;
-      }
-      selZh.value = chosenZhVoiceURI;
-    } else {
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = '系統無純中文女聲（自動調高音調）';
-      selZh.appendChild(opt);
-    }
-
-    selEn.innerHTML = '';
-    if (enList.length) {
-      enList.forEach(v => {
-        const opt = document.createElement('option');
-        opt.value = v.voiceURI || v.name;
-        opt.textContent = `${v.name} (${v.lang})`;
-        selEn.appendChild(opt);
-      });
-      const prefEn = enList.find(v => {
-        const l = v.lang.toLowerCase();
-        const n = v.name.toLowerCase();
-        return (l.includes('gb') || n.includes('uk')) &&
-               (n.includes('libby') || n.includes('sonia') || n.includes('hazel') || n.includes('mia') || n.includes('serena'));
-      }) || enList.find(v => v.lang.toLowerCase().includes('gb')) || enList.find(v => v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('jenny')) || enList[0];
-      if (!chosenEnVoiceURI) {
-        chosenEnVoiceURI = prefEn.voiceURI || prefEn.name;
-      }
-      selEn.value = chosenEnVoiceURI;
-    } else {
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = '系統無純英文女聲（自動調高音調）';
-      selEn.appendChild(opt);
-    }
-  }
-
-  function onUserSelectVoice() {
-    const selZh = document.getElementById('select-zh-voice');
-    const selEn = document.getElementById('select-en-voice');
-    if (selZh && selZh.value) chosenZhVoiceURI = selZh.value;
-    if (selEn && selEn.value) chosenEnVoiceURI = selEn.value;
-  }
-
-  function getSelectedVoice(langType) {
+  function getBestDefaultVoice(langType) {
     if (!('speechSynthesis' in window)) return null;
     const all = window.speechSynthesis.getVoices();
     if (!all || !all.length) return null;
 
     if (langType === 'zh') {
-      if (chosenZhVoiceURI) {
-        const match = all.find(v => (v.voiceURI || v.name) === chosenZhVoiceURI);
-        if (match) return match;
-      }
-      const hk = all.find(v => (v.lang.toLowerCase().includes('zh-hk') || v.lang.toLowerCase().includes('yue')) && isStrictlyFemale(v));
-      if (hk) return hk;
-      const anyZh = all.find(v => v.lang.toLowerCase().startsWith('zh') && isStrictlyFemale(v));
-      if (anyZh) return anyZh;
-      return null;
+      const zhPool = all.filter(v => {
+        const l = v.lang.toLowerCase();
+        const n = v.name.toLowerCase();
+        return (l.includes('zh') || l.includes('yue') || n.includes('cantonese') || n.includes('chinese')) && isCleanFemaleVoice(v);
+      });
+      return (
+        zhPool.find(v => v.name.includes('HiuMaan') || v.name.includes('HiuGaai')) ||
+        zhPool.find(v => v.name.includes('Sin-ji') || v.name.includes('Tracy')) ||
+        zhPool.find(v => (v.lang.toLowerCase().includes('hk') || v.lang.toLowerCase().includes('yue')) && v.name.includes('Google')) ||
+        zhPool.find(v => v.lang.toLowerCase().includes('hk') || v.lang.toLowerCase().includes('yue')) ||
+        zhPool[0] ||
+        null
+      );
     } else {
-      if (chosenEnVoiceURI) {
-        const match = all.find(v => (v.voiceURI || v.name) === chosenEnVoiceURI);
-        if (match) return match;
-      }
-      const uk = all.find(v => (v.lang.toLowerCase().includes('en-gb') || v.lang.toLowerCase() === 'en_gb') && isStrictlyFemale(v));
-      if (uk) return uk;
-      const anyEn = all.find(v => v.lang.toLowerCase().startsWith('en') && isStrictlyFemale(v));
-      if (anyEn) return anyEn;
-      return null;
+      const enPool = all.filter(v => v.lang.toLowerCase().startsWith('en') && isCleanFemaleVoice(v));
+      return (
+        enPool.find(v => v.name.includes('Sonia') || v.name.includes('Libby') || v.name.includes('Hazel')) ||
+        enPool.find(v => v.name.includes('Google UK English Female')) ||
+        enPool.find(v => v.name.includes('Serena') || v.name.includes('Martha') || v.name.includes('Kate')) ||
+        enPool.find(v => v.lang.toLowerCase().includes('gb') || v.lang.toLowerCase().includes('uk')) ||
+        enPool.find(v => v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Zira') || v.name.includes('Samantha')) ||
+        enPool[0] ||
+        null
+      );
     }
   }
 
   function speakZh(text) {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const clean = text.replace(/＿＿+/g, '，空格，').replace(/_/g, '');
+    const clean = text.replace(/＿＿+/g, '，空格，').replace(/\_/g, '');
     const u = new SpeechSynthesisUtterance(clean);
 
-    const voice = getSelectedVoice('zh');
+    const voice = getBestDefaultVoice('zh');
     if (voice) {
       u.voice = voice;
       u.lang = voice.lang;
@@ -1061,7 +955,7 @@
       u.lang = 'zh-HK';
     }
     u.rate = speechRate;
-    u.pitch = 1.25;
+    u.pitch = 1.1;
     window.speechSynthesis.speak(u);
   }
 
@@ -1070,7 +964,7 @@
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
 
-    const voice = getSelectedVoice('en');
+    const voice = getBestDefaultVoice('en');
     if (voice) {
       u.voice = voice;
       u.lang = voice.lang;
@@ -1078,20 +972,13 @@
       u.lang = 'en-GB';
     }
     u.rate = Math.max(0.72, Math.min(0.85, speechRate + 0.03));
-    u.pitch = 1.22;
+    u.pitch = 1.08;
     window.speechSynthesis.speak(u);
-  }
-
-  function testFemaleVoices() {
-    speakZh("你好！我是中文女聲老師。");
-    setTimeout(() => {
-      speakEn("Hello, this is your British English female voice.");
-    }, 2200);
   }
 
   if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = () => {
-      populateVoiceSelectors();
+      window.speechSynthesis.getVoices();
     };
   }
 
@@ -2420,7 +2307,9 @@
   }
 
   window.onload = () => {
-    populateVoiceSelectors();
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
     initFillSection();
     initReorderSection();
     initMakingSection();
